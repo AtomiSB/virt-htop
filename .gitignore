@@ -1,0 +1,8 @@
+*.o 
+*.swp
+*.pdf
+tags
+build/
+tests/build/
+doxygen
+doxygen.doc
