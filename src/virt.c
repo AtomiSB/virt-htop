@@ -219,8 +219,8 @@ virConnectPtr virt_connect_node(char **conn_args)
 
     if (conn_args) {
         /* check if system or session connection */
-        if (strstr(conn_args[0], CONNECTION_SYSTEM) || 
-            strstr(conn_args[0], CONNECTION_SESSION))
+        if (strcmp(conn_args[0], CONNECTION_SYSTEM)  == 0 || 
+            strcmp(conn_args[0], CONNECTION_SESSION) == 0)
             conn = virConnectOpen(conn_args[0]);
         else
             conn = virConnectOpenAuth(conn_args[0], virConnectAuthPtrDefault, 0);

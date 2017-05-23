@@ -172,12 +172,29 @@ int main(int argc, const char **argv)
 {
     openlog(LOG_FILE, LOG_PID, LOG_USER);
 
-    if (argc < 2) return 0;
+    if (argc < 2) {
+        print_usage();
+        return 0;
+    }
+
+    /* help argument */
+    char **help = parser_find_option(argv+1, argv+argc, HELP_SHORT);
+    if (!help)
+        help = parser_find_option(argv+1, argv+argc, HELP_LONG);
+    if (help) {
+        print_help();
+        return 0;
+    }
 
     /* get connection arguments */
     char **conn_args = parser_find_option(argv+1, argv+argc, CONNECT_SHORT);
     if (!conn_args)
         conn_args = parser_find_option(argv+1, argv+argc, CONNECT_LONG);
+
+    if (!conn_args) {
+        print_usage();
+        return 1;
+    }
     
     /* initialize libvirt */
     virt_setup();
@@ -190,7 +207,7 @@ int main(int argc, const char **argv)
     virt.conn = virt_connect_node(conn_args);
 
     if (virt.conn == NULL) {
-        fprintf(stderr, "Failed to open connection to %s\n", *conn_args);
+        fprintf(stderr, "Failed to open connection\n");
         return 1;
     }
 
