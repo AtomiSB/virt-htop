@@ -21,12 +21,30 @@
 #include "utils.h"
 
 const char *options_value[OPTIONS_SIZE] = {
-    "-c", "--connect"
+    "-c", "--connect",
+    "-h", "--help"
 };
 
 int options_count[OPTIONS_SIZE] = {
-    1, 1
+    1, 1,
+    0, 0
 };
+
+void print_usage()
+{
+    printf("Usage: virt-htop [option] -c|--connect <URL>\n");
+    printf("--help -h:              Print this information\n");
+    printf("--connect -c <URL>:     Connect to the <URL> node\n");
+    printf("\n");
+}
+
+void print_help()
+{
+    printf("virt-htop Copyright (C) 2017 Atomi Sebastian Bialobrzecki\n");
+    printf("This is free software; see the source for copying conditions.\n"\
+            "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
+    printf("\n");
+}
 
 char **parser_find_option(const char **begin, const char **end, options_enum option)
 {
@@ -35,15 +53,21 @@ char **parser_find_option(const char **begin, const char **end, options_enum opt
     const char **iter = begin;
     /* find option first */
     while (iter != end) {
-        char *pos = strstr(*begin, options_value[option]);
+        int pos = strcmp(*begin, options_value[option]);
 
-        if (pos) {
+        if (pos == 0) {
+            /* If option doesn't have arguments */
+            if (options_count[option] == 0)
+                return (char **)(options_value + option);
+
             ++iter;
+
+            if (!*iter) return NULL;
 
             char **arguments = calloc(options_count[option], sizeof(char *));
             /* find arguments */
             for (int i = 0; i != options_count[option]; ++i, ++iter)
-                if (iter)
+                if (*iter)
                     arguments[i] = copy_str(*iter);
             return arguments;
         }

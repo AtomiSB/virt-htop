@@ -26,13 +26,14 @@
  * Number of possible argument choices, 
  * size of the options_value and options_count arrays. 
  */
-#define OPTIONS_SIZE (2)
+#define OPTIONS_SIZE (4)
 
 /**
  * Used for indexing the options_value and options_count arrays 
  */
 typedef enum {
-    CONNECT_SHORT, CONNECT_LONG
+    CONNECT_SHORT, CONNECT_LONG,
+    HELP_SHORT, HELP_LONG
 } options_enum;
 
 /**
@@ -45,6 +46,16 @@ const char  *options_value[OPTIONS_SIZE];
  * @see options_enum 
  */
 int options_count[OPTIONS_SIZE];
+
+/**
+ * Print usage information.
+ */
+void print_usage();
+
+/**
+ * Print helpful information.
+ */
+void print_help();
 
 /**
  * Parse command line argument values for given option, return valid argument values.
