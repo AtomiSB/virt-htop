@@ -154,8 +154,9 @@ int main_loop(virt_data *virt, tui_data *tui)
             tui_draw_all(tui);
 
             /* for each column set current index to domain_index */
-            for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
-                set_current_item(tui->domain_column[i], tui->domain_column[i]->items[domain_index]);
+            if (tui->domain_size > 1)
+                for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
+                    set_current_item(tui->domain_column[i], tui->domain_column[i]->items[domain_index]);
 
             refresh();
 
