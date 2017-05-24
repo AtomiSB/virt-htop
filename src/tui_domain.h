@@ -44,6 +44,9 @@ typedef enum {
     TUI_DOMAIN_COLUMN_REASON
 } tui_domain_column_enum;
 
+/**
+ * Struct that holds domain data.
+ */
 typedef tui_domain_column_enum tui_domain_type;
 typedef struct tui_domain_data {
     char    **domain_data[TUI_DOMAIN_COLUMN_SIZE];          /** Domain data strings */

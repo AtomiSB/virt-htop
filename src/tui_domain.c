@@ -1,4 +1,27 @@
+/* This file contains routines to draw terminal output using ncurses
+ * Copyright (C) 2017 Atomi
+ * Author: Sebastian Bialobrzecki <sbb@openmailbox.org>
+ *
+ * This file is part of virt-htop.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "tui_domain.h"
+
+int tui_column_width[TUI_DOMAIN_COLUMN_SIZE] = {
+    4, 25, 12, 10, 7, 70
+};
 
 const char *tui_node_info_summary[TUI_NODE_INFO_SUMMARY_SIZE] = {
     "  domains:",

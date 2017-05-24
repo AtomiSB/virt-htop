@@ -23,6 +23,7 @@ set(SOURCES
 ./src/virt.c
 ./src/arguments.c
 ./src/tui.c
+./src/tui_node.c
 ./src/tui_domain.c)
 
 # -- Targets --

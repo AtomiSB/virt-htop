@@ -22,18 +22,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int tui_column_width[TUI_DOMAIN_COLUMN_SIZE] = {
-    4, 25, 12, 10, 7, 70
-};
-
-const char *tui_node_info_type[TUI_NODE_INFO_SIZE] = {
-    "Hostname:",
-    "     URI:",
-    " Version:",
-    "  Memory:",
-    "  Memory:"
-};
-
 const char *tui_command_panel_keys[TUI_COMMAND_PANEL_SIZE] = {
     "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10"
 };
@@ -81,75 +69,24 @@ void tui_init()
 
 void tui_init_default(tui_data *tui)
 {
-    tui->node_memory_size    = NULL;
-    for (int i = 0; i != TUI_NODE_INFO_SIZE; ++i) {
-        tui->node_data[i] = NULL;
-        tui->node_type[i] = i;
-    }
-
-    tui->domain_data = malloc(sizeof(tui_domain_data));
+    tui->node_data      = malloc(sizeof(tui_node_data));
+    tui->domain_data    = malloc(sizeof(tui_domain_data));
+    tui_init_default_node_data(tui->node_data);
     tui_init_default_domain_columns(tui->domain_data);
-}
-
-void tui_deinit_node_data(tui_data *tui)
-{
-    for (int i = 0; i != TUI_NODE_INFO_SIZE; ++i)
-        free(tui->node_data[i]);
-    free(tui->domain_data->domain_memory_size);
 }
 
 void tui_deinit(tui_data *tui)
 {
-    /* unpost and free all the memory taken up */
-    for (int i = 0; i != TUI_NODE_INFO_SIZE; ++i)
-        free(tui->node_data[i]);
-
     tui_deinit_domain_columns(tui->domain_data);
+    tui_deinit_node_data(tui->node_data);
     free(tui->domain_data);
+    free(tui->node_data);
 }
 
 void tui_reset(tui_data *tui)
 {
     tui_deinit(tui);
     tui_init_default(tui);
-}
-
-void tui_draw_node_panel(tui_data *tui)
-{
-    int x = 0, y = 0;
-    /*for (int i = 0; i != TUI_NODE_INFO_SIZE; ++i, ++y) {*/
-        /*mvwaddstr(stdscr, y, x, tui_node_info_type[tui->domain_type[i]]);*/
-        /*attron(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));*/
-        /*waddch(stdscr, ' ');*/
-        /*waddstr(stdscr, tui->node_data[tui->domain_type[i]]);*/
-        /*attroff(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));*/
-    /*}*/
-    mvwaddstr(stdscr, y++, x, tui_node_info_type[TUI_NODE_INFO_HOSTNAME]);
-    attron(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));
-    waddch(stdscr, ' ');
-    waddstr(stdscr, tui->node_data[TUI_NODE_INFO_HOSTNAME]);
-    attroff(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));
-
-    mvwaddstr(stdscr, y++, x, tui_node_info_type[TUI_NODE_INFO_URI]);
-    attron(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));
-    waddch(stdscr, ' ');
-    waddstr(stdscr, tui->node_data[TUI_NODE_INFO_URI]);
-    attroff(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));
-
-    mvwaddstr(stdscr, y++, x, tui_node_info_type[TUI_NODE_INFO_LIB_VERSION]);
-    attron(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));
-    waddch(stdscr, ' ');
-    waddstr(stdscr, tui->node_data[TUI_NODE_INFO_LIB_VERSION]);
-    attroff(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));
-
-    mvwaddstr(stdscr, y++, x, tui_node_info_type[TUI_NODE_INFO_TOTAL_MEMORY]);
-    attron(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));
-    waddch(stdscr, ' ');
-    waddstr(stdscr, tui->node_data[TUI_NODE_INFO_DOMAINS_MEMORY]);
-    waddstr(stdscr, "/");
-    waddstr(stdscr, tui->node_data[TUI_NODE_INFO_TOTAL_MEMORY]);
-    waddstr(stdscr, "MB");
-    attroff(A_BOLD | COLOR_PAIR(TUI_COLOR_HELP_KEY));
 }
 
 void tui_draw_command_panel()
@@ -189,30 +126,9 @@ void tui_draw_command_panel()
     attroff(COLOR_PAIR(TUI_COLOR_COMMAND_PANEL_TEXT));
 }
 
-void tui_create_node_panel(tui_data *tui, virt_node_data *data)
-{
-    /* copy the pointers */
-    tui->node_data[TUI_NODE_INFO_HOSTNAME] = 
-        data->node_data[data->node_type[VIRT_NODE_DATA_TYPE_HOSTNAME]];
-    tui->node_data[TUI_NODE_INFO_URI] = 
-        data->node_data[data->node_type[VIRT_NODE_DATA_TYPE_URI]];
-    tui->node_data[TUI_NODE_INFO_LIB_VERSION] = 
-        data->node_data[data->node_type[VIRT_NODE_DATA_TYPE_LIB_VERSION]];
-    tui->node_data[TUI_NODE_INFO_TOTAL_MEMORY] = 
-        data->node_data[data->node_type[VIRT_NODE_DATA_TYPE_TOTAL_MEMORY]];
-    tui->node_data[TUI_NODE_INFO_DOMAINS_MEMORY] = tui->domain_data->domain_memory_size;
-
-    /* set up default order */
-    tui->node_type[0] = TUI_NODE_INFO_HOSTNAME;
-    tui->node_type[1] = TUI_NODE_INFO_URI;
-    tui->node_type[2] = TUI_NODE_INFO_LIB_VERSION;
-    tui->node_type[3] = TUI_NODE_INFO_TOTAL_MEMORY;
-    tui->node_type[4] = TUI_NODE_INFO_DOMAINS_MEMORY;
-}
-
 void tui_draw_all(tui_data *tui)
 {
-    tui_draw_node_panel(tui);
+    tui_draw_node_panel(tui->node_data);
     tui_draw_column_header(tui);
     tui_draw_domain_columns(tui->domain_data);
     tui_draw_command_panel();

@@ -24,6 +24,7 @@
 #include <ncurses.h>
 #include <menu.h>
 #include "virt.h"
+#include "tui_node.h"
 #include "tui_domain.h"
 /** Input delay between keystrokes in milliseconds */
 #define TUI_INPUT_DELAY (50)
@@ -31,10 +32,6 @@
 #define TUI_REFRESH_TIME (1.0)
 /** Number of defined color pairs */
 #define COLORS_SIZE (4)
-/** Size of array containing strings of node info */
-#define TUI_NODE_INFO_SIZE (5)
-/** Size of array containing strings of node summary */
-#define TUI_NODE_INFO_SUMMARY_SIZE (6)
 /** Command panel's number of elements */
 #define TUI_COMMAND_PANEL_SIZE (10)
 /** Size of array containing pairs (key, desc) used in printing helpful information */
@@ -66,23 +63,6 @@ typedef enum {
     TUI_KEY_COMMAND_DESTROY   = 'd',
     TUI_KEY_QUIT              = 'q'
 } tui_keyboard_key_enum;
-
-/** Represents node info type */
-typedef enum {
-    TUI_NODE_INFO_HOSTNAME = 0,
-    TUI_NODE_INFO_URI,
-    TUI_NODE_INFO_LIB_VERSION,
-    TUI_NODE_INFO_TOTAL_MEMORY,
-    TUI_NODE_INFO_DOMAINS_MEMORY,
-} tui_node_panel_enum;
-
-typedef tui_node_panel_enum tui_node_type;
-
-/** Types of printable node info. */
-const char *tui_node_info_type[TUI_NODE_INFO_SIZE];
-
-/** TODO */
-const char *tui_node_info_summary[TUI_NODE_INFO_SUMMARY_SIZE];
 
 /** List of color pairs used in TUI. */
 typedef enum {
@@ -120,17 +100,15 @@ const char *tui_command_panel_text[TUI_COMMAND_PANEL_SIZE];
  */
 void tui_init();
 
+/** Forward declaration of tui_node_data */
+typedef struct tui_node_data tui_node_data;
 /** Forward declaration of tui_domain_data */
 typedef struct tui_domain_data tui_domain_data;
 
 /** Represents domain columns */
-typedef struct {
-    char            *node_data[TUI_NODE_INFO_SIZE]; /** Node data strings */
-    tui_node_type   node_type[TUI_NODE_INFO_SIZE];  /** Keeps track of node info index position */
-
-    tui_domain_data *domain_data; /***/
-
-    char *node_memory_size;     /** RAM size of the node */
+typedef struct tui_data {
+    tui_node_data   *node_data;
+    tui_domain_data *domain_data;
 } tui_data;
 
 /**
@@ -152,19 +130,6 @@ void tui_deinit(tui_data *tui);
  * @param tui - pointer to the tui_data that draws on the screen
  */
 void tui_reset(tui_data *tui);
-
-/**
- * Draw the node information at the top left side of the screen.
- * @param tui - pointer to the tui_data that draws on the screen
- */
-void tui_draw_node_panel(tui_data *tui);
-
-/**
- * Copy the node information from data object to tui object
- * @param tui   - pointer to the tui_data that draws on the screen
- * @param data  - pointer to data extracted from libvirt calls.
- */
-void tui_create_node_panel(tui_data *tui, virt_node_data *data);
 
 /**
  * Draw command panel at the bottom of the screen.

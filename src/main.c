@@ -33,7 +33,9 @@ int main_loop(virt_data *virt, tui_data *tui)
     /* generate domains */
     tui_create_columns(tui->domain_data, &domain_data);
     /* generate node panel */
-    tui_create_node_panel(tui, &node_data);
+    tui_create_node_panel(tui->node_data, &node_data);
+    /* added memory data */
+    tui_node_update_memory_data(tui->node_data, &domain_data);
 
     tui_draw_all(tui);
 
@@ -149,7 +151,10 @@ int main_loop(virt_data *virt, tui_data *tui)
 
             /* collect data from node*/
             node_data = virt_node_collect_data(virt);
-            tui_create_node_panel(tui, &node_data);
+            tui_create_node_panel(tui->node_data, &node_data);
+
+            /* added memory data */
+            tui_node_update_memory_data(tui->node_data, &domain_data);
 
             tui_draw_all(tui);
 
