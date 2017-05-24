@@ -71,7 +71,7 @@ const char *tui_command_panel_text[TUI_COMMAND_PANEL_SIZE] = {
 
 tui_help_keys_pair tui_help_keys[TUI_HELP_KEYS_SIZE] =
 {
-    {"Arrows j  k:", " Scroll domain list"},
+    {"Arrows j  k:", " Scroll list"},
     {"      F1  ?:", " Show this help screen"},
     {"      F5  a:", " Toggle autostart option"},
     {"      F6  s:", " Start, Resume"},
