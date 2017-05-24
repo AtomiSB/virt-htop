@@ -31,7 +31,7 @@ int main_loop(virt_data *virt, tui_data *tui)
     virt_node_data node_data = virt_node_collect_data(virt);
 
     /* generate domains */
-    tui_create_columns(tui, &domain_data);
+    tui_create_columns(tui->domain_data, &domain_data);
     /* generate node panel */
     tui_create_node_panel(tui, &node_data);
 
@@ -48,7 +48,7 @@ int main_loop(virt_data *virt, tui_data *tui)
        with expected timeout*/
     timeout(TUI_INPUT_DELAY);
 
-    keypad(tui->domain_columns_win, TRUE);   /* allow special key input */
+    keypad(tui->domain_data->domain_columns_win, TRUE);   /* allow special key input */
     int quit    = FALSE;
     int command = FALSE;
     while (quit != TRUE) {
@@ -62,29 +62,29 @@ int main_loop(virt_data *virt, tui_data *tui)
                 case KEY_DOWN: case TUI_KEY_LIST_DOWN: {
                     command = TRUE;
                     for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
-                        menu_driver(tui->domain_column[i], REQ_DOWN_ITEM);
-                    domain_index = item_index(current_item(tui->domain_column[0]));
+                        menu_driver(tui->domain_data->domain_column[i], REQ_DOWN_ITEM);
+                    domain_index = item_index(current_item(tui->domain_data->domain_column[0]));
                     break;
                 }
                 case KEY_UP: case TUI_KEY_LIST_UP: {
                     command = TRUE;
                     for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
-                        menu_driver(tui->domain_column[i], REQ_UP_ITEM);
-                    domain_index = item_index(current_item(tui->domain_column[0]));
+                        menu_driver(tui->domain_data->domain_column[i], REQ_UP_ITEM);
+                    domain_index = item_index(current_item(tui->domain_data->domain_column[0]));
                     break;
                 }
                 case KEY_NPAGE: {
                     command = TRUE;
                     for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
-                        menu_driver(tui->domain_column[i], REQ_SCR_DLINE);
-                    domain_index = item_index(current_item(tui->domain_column[0]));
+                        menu_driver(tui->domain_data->domain_column[i], REQ_SCR_DLINE);
+                    domain_index = item_index(current_item(tui->domain_data->domain_column[0]));
                     break;
                 }
                 case KEY_PPAGE: {
                     command = TRUE;
                     for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
-                        menu_driver(tui->domain_column[i], REQ_SCR_ULINE);
-                    domain_index = item_index(current_item(tui->domain_column[0]));
+                        menu_driver(tui->domain_data->domain_column[i], REQ_SCR_ULINE);
+                    domain_index = item_index(current_item(tui->domain_data->domain_column[0]));
                     break;
                 }
                 case KEY_F(TUI_COMMAND_KEY_HELP): 
@@ -96,7 +96,7 @@ int main_loop(virt_data *virt, tui_data *tui)
                 case KEY_F(TUI_COMMAND_KEY_AUTO): 
                 case TUI_KEY_COMMAND_AUTOSTART: {
                     command = TRUE;
-                    domain_index = item_index(current_item(tui->domain_column[0]));
+                    domain_index = item_index(current_item(tui->domain_data->domain_column[0]));
                     if (virt->domain_size > 0)
                         virt_domain_autostart(virt->domain[domain_index]);
                     break;
@@ -104,7 +104,7 @@ int main_loop(virt_data *virt, tui_data *tui)
                 case KEY_F(TUI_COMMAND_KEY_START): 
                 case TUI_KEY_COMMAND_START: {
                     command = TRUE;
-                    domain_index = item_index(current_item(tui->domain_column[0]));
+                    domain_index = item_index(current_item(tui->domain_data->domain_column[0]));
                     if (virt->domain_size > 0)
                         virt_domain_create(virt->domain[domain_index]);
                     break;
@@ -112,7 +112,7 @@ int main_loop(virt_data *virt, tui_data *tui)
                 case KEY_F(TUI_COMMAND_KEY_PAUSE): 
                 case TUI_KEY_COMMAND_PAUSE: {
                     command = TRUE;
-                    domain_index = item_index(current_item(tui->domain_column[0]));
+                    domain_index = item_index(current_item(tui->domain_data->domain_column[0]));
                     if (virt->domain_size > 0)
                         virt_domain_pause(virt->domain[domain_index]);
                     break;
@@ -120,7 +120,7 @@ int main_loop(virt_data *virt, tui_data *tui)
                 case KEY_F(TUI_COMMAND_KEY_REBOOT): 
                 case TUI_KEY_COMMAND_REBOOT: {
                     command = TRUE;
-                    domain_index = item_index(current_item(tui->domain_column[0]));
+                    domain_index = item_index(current_item(tui->domain_data->domain_column[0]));
                     if (virt->domain_size > 0)
                         virt_domain_reboot(virt->domain[domain_index]);
                     break;
@@ -145,7 +145,7 @@ int main_loop(virt_data *virt, tui_data *tui)
 
             /* collect data from all domains*/
             domain_data = virt_domain_collect_data(virt);
-            tui_create_columns(tui, &domain_data);
+            tui_create_columns(tui->domain_data, &domain_data);
 
             /* collect data from node*/
             node_data = virt_node_collect_data(virt);
@@ -154,9 +154,9 @@ int main_loop(virt_data *virt, tui_data *tui)
             tui_draw_all(tui);
 
             /* for each column set current index to domain_index */
-            if (tui->domain_size > 1)
+            if (tui->domain_data->domain_size > 1)
                 for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
-                    set_current_item(tui->domain_column[i], tui->domain_column[i]->items[domain_index]);
+                    set_current_item(tui->domain_data->domain_column[i], tui->domain_data->domain_column[i]->items[domain_index]);
 
             refresh();
 
@@ -164,7 +164,7 @@ int main_loop(virt_data *virt, tui_data *tui)
             time(&refresh_counter);
             command = FALSE;
         }
-        wrefresh(tui->domain_columns_win);
+        wrefresh(tui->domain_data->domain_columns_win);
     }
     return 0;
 }
