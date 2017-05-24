@@ -19,6 +19,18 @@ make
 ./virt-htop --connect qemu:///system
 ```
 
+## Usage
+```
+Arrows j  k: Scroll list,
+      F1  ?: Show this help screen,
+      F5  a: Toggle autostart option,
+      F6  s: Start, Resume,
+      F7  p: Suspend,
+      F8  r: Reboot,
+      F9  d: Destroy,
+      F10 q: Quit
+```
+
 ## License
 ![GPLv3](http://www.gnu.org/graphics/gplv3-127x51.png)
 

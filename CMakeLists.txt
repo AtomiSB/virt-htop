@@ -22,7 +22,9 @@ set(SOURCES
 ./src/utils.c
 ./src/virt.c
 ./src/arguments.c
-./src/tui.c)
+./src/tui.c
+./src/tui_node.c
+./src/tui_domain.c)
 
 # -- Targets --
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -31,7 +33,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${DIR_SRC})
 
 # -- Linking --
-target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES} ${CURSES_LINK_MENU} ${LIBVIRT_LINK})#${SYSLOG_LINK})
+target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES} ${CURSES_LINK_MENU} ${LIBVIRT_LINK})
 
 # -- Compiler flags --
 target_compile_options(${PROJECT_NAME} PUBLIC -Wall -Werror)
