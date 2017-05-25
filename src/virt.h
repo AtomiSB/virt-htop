@@ -29,7 +29,7 @@
 #define LIB_MINOR_VERSION(x) ((x - (LIB_MAJOR_VERSION(x) * 1000000)) / 1000)
 #define LIB_VERSION(x)       (LIB_MAJOR_VERSION(x) + (LIB_MINOR_VERSION(x) * 0.1))
 /** Version number of virt-htop */
-#define VIRT_HTOP_VERSION ("0.1.0")
+#define VIRT_HTOP_VERSION ("0.1.1")
 /** System connection */
 #define CONNECTION_SYSTEM (":///system")
 /** Session connection */

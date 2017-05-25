@@ -41,7 +41,7 @@ const char *tui_column_header[TUI_DOMAIN_COLUMN_SIZE] = {
     "REASON"
 };
 
-void tui_init_default_domain_columns(tui_domain_data *tui)
+void tui_init_all_domain_columns(tui_domain_data *tui)
 {
     for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i) {
         tui->domain_data[i] = NULL;
@@ -59,8 +59,10 @@ void tui_init_default_domain_columns(tui_domain_data *tui)
     tui->domain_size = 0;
 }
 
-void tui_deinit_domain_columns(tui_domain_data *tui)
+void tui_deinit_domain_columns(void *tdata)
 {
+    tui_domain_data *tui = (tui_domain_data *)tdata;
+
     /* free columns */
     if (tui->domain_column) {
         for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i) {

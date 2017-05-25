@@ -25,6 +25,8 @@
 
 int main_loop(virt_data *virt, tui_data *tui)
 {
+    tui_mode current_mode = TUI_MODE_DOMAIN;
+
     /* collect data from all domains */
     virt_domain_data domain_data = virt_domain_collect_data(virt);
     /* collect data from node */
@@ -37,7 +39,7 @@ int main_loop(virt_data *virt, tui_data *tui)
     /* added memory data */
     tui_node_update_memory_data(tui->node_data, &domain_data);
 
-    tui_draw_all(tui);
+    tui_draw[current_mode](tui);
 
     /* this index always points to the current selected domain */
     size_t domain_index = 0;
@@ -142,7 +144,8 @@ int main_loop(virt_data *virt, tui_data *tui)
             clear();
 
             /* reset tui and virt data*/
-            tui_reset(tui);
+            tui_reset[current_mode](tui);
+            tui_reset[TUI_NODE](tui);
             virt_reset(virt);
 
             /* collect data from all domains*/
@@ -156,7 +159,7 @@ int main_loop(virt_data *virt, tui_data *tui)
             /* added memory data */
             tui_node_update_memory_data(tui->node_data, &domain_data);
 
-            tui_draw_all(tui);
+            tui_draw[current_mode](tui);
 
             /* for each column set current index to domain_index */
             if (tui->domain_data->domain_size > 1)
@@ -218,17 +221,17 @@ int main(int argc, const char **argv)
     }
 
     /* initialize ncurses library routines */
-    tui_init();
+    tui_init_global();
 
     /* data associated with TUI */
     tui_data tui;
-    tui_init_default(&tui);
+    tui_init_all(&tui);
 
     int res = main_loop(&virt, &tui);
 
     /* deinit data */
     endwin();
-    tui_deinit(&tui);
+    tui_deinit_all(&tui);
     virt_deinit(&virt);
     free_pointer_char(conn_args, conn_args + options_count[CONNECT_SHORT]);
 

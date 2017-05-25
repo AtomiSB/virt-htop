@@ -59,7 +59,7 @@ typedef struct tui_node_data {
  * Set node data object to default state.
  * @param tui - pointer to the tui_node_data that draws on the screen
  */
-void tui_init_default_node_data(tui_node_data *tui);
+void tui_init_all_node_data(tui_node_data *tui);
 
 /**
  * Deinitialize the node data object.
