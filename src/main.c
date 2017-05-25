@@ -25,6 +25,9 @@
 
 int main_loop(virt_data *virt, tui_data *tui)
 {
+    tui_mode current_mode = TUI_MODE_DOMAIN;
+
+    /*virt_collect_data[current_mode](virt);*/
     /* collect data from all domains */
     virt_domain_data domain_data = virt_domain_collect_data(virt);
     /* collect data from node */
@@ -37,7 +40,7 @@ int main_loop(virt_data *virt, tui_data *tui)
     /* added memory data */
     tui_node_update_memory_data(tui->node_data, &domain_data);
 
-    tui_draw_all(tui);
+    tui_draw[current_mode](tui);
 
     /* this index always points to the current selected domain */
     size_t domain_index = 0;
@@ -59,6 +62,10 @@ int main_loop(virt_data *virt, tui_data *tui)
             switch (user_input) {
                 case KEY_F(TUI_COMMAND_KEY_QUIT): case TUI_KEY_QUIT: {
                     quit = TRUE;
+                    break;
+                }
+                case TUI_KEY_MODE_ONE: {
+                    current_mode = TUI_MODE_DOMAIN;
                     break;
                 }
                 case KEY_DOWN: case TUI_KEY_LIST_DOWN: {
@@ -142,8 +149,9 @@ int main_loop(virt_data *virt, tui_data *tui)
             clear();
 
             /* reset tui and virt data*/
-            tui_reset(tui);
-            virt_reset(virt);
+            tui_reset[current_mode](tui);
+            tui_reset[TUI_NODE](tui);
+            virt_reset_all(virt);
 
             /* collect data from all domains*/
             domain_data = virt_domain_collect_data(virt);
@@ -156,7 +164,7 @@ int main_loop(virt_data *virt, tui_data *tui)
             /* added memory data */
             tui_node_update_memory_data(tui->node_data, &domain_data);
 
-            tui_draw_all(tui);
+            tui_draw[current_mode](tui);
 
             /* for each column set current index to domain_index */
             if (tui->domain_data->domain_size > 1)
@@ -207,7 +215,7 @@ int main(int argc, const char **argv)
     
     /* data associated with libvirt */
     virt_data virt;
-    virt_init_default(&virt);
+    virt_init_all(&virt);
 
     /* connect to the node */
     virt.conn = virt_connect_node(conn_args);
@@ -218,18 +226,18 @@ int main(int argc, const char **argv)
     }
 
     /* initialize ncurses library routines */
-    tui_init();
+    tui_init_global();
 
     /* data associated with TUI */
     tui_data tui;
-    tui_init_default(&tui);
+    tui_init_all(&tui);
 
     int res = main_loop(&virt, &tui);
 
     /* deinit data */
     endwin();
-    tui_deinit(&tui);
-    virt_deinit(&virt);
+    tui_deinit_all(&tui);
+    virt_deinit_all(&virt);
     free_pointer_char(conn_args, conn_args + options_count[CONNECT_SHORT]);
 
     closelog();

@@ -24,6 +24,7 @@
 #include <ncurses.h>
 #include <menu.h>
 #include "virt.h"
+#include "virt_domain.h"
 #include "tui_node.h"
 #include "tui_domain.h"
 /** Input delay between keystrokes in milliseconds */
@@ -36,6 +37,16 @@
 #define TUI_COMMAND_PANEL_SIZE (10)
 /** Size of array containing pairs (key, desc) used in printing helpful information */
 #define TUI_HELP_KEYS_SIZE (8)
+/** Size of array containing function pointers to tui init functions */
+#define TUI_INIT_FUNCTION_SIZE (1 + 1)
+/** Size of array containing function pointers to tui deinit functions */
+#define TUI_DEINIT_FUNCTION_SIZE (1 + 1)
+/** Size of array containing function pointers to tui reset functions */
+#define TUI_RESET_FUNCTION_SIZE (1 + 1)
+/** Size of array containing function pointers to tui create functions */
+#define TUI_CREATE_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to tui draw functions */
+#define TUI_DRAW_FUNCTION_SIZE (1)
 
 /** Represents F(N) keys used for calling command panel's buttons */
 typedef enum {
@@ -53,6 +64,7 @@ typedef enum {
 
 /** Represents keys used for manipulating TUI */
 typedef enum {
+    TUI_KEY_MODE_ONE          = '1',
     TUI_KEY_LIST_DOWN         = 'j',
     TUI_KEY_LIST_UP           = 'k',
     TUI_KEY_COMMAND_HELP      = '?',
@@ -98,7 +110,7 @@ const char *tui_command_panel_text[TUI_COMMAND_PANEL_SIZE];
  * Initialize TUI, this function needs to be called before 
  * any other tui functions.
  */
-void tui_init();
+void tui_init_global();
 
 /** Forward declaration of tui_node_data */
 typedef struct tui_node_data tui_node_data;
@@ -115,21 +127,61 @@ typedef struct tui_data {
  * Set tui object to default state.
  * @param tui - pointer to the tui_domain_data that draws on the screen
  */
-void tui_init_default(tui_data *tui);
+void tui_init_all(tui_data *tui);
+
+/**
+ * Set tui domain object to default state.
+ * @param tui - pointer to the tui_domain_data that draws on the screen
+ */
+void tui_init_domain(void *tdata);
+
+/**
+ * Set tui node object to default state.
+ * @param tui - pointer to the tui_domain_data that draws on the screen
+ */
+void tui_init_node(void *tdata);
 
 /**
  * Deinitialize the tui object.
  * @param tui - pointer to the tui_data that draws on the screen
  */
-void tui_deinit(tui_data *tui);
+void tui_deinit_all(tui_data *tui);
+
+/**
+ * Deinitialize the tui domain object.
+ * @param tdata - pointer to the tui_data that draws on the screen
+ */
+void tui_deinit_domain(void *tdata);
+
+/**
+ * Deinitialize the tui node object.
+ * @param tdata - pointer to the tui_data that draws on the screen
+ */
+void tui_deinit_node(void *tdata);
 
 /**
  * Deinitialize and set tui object to default state.
- * @see tui_init_default
- * @see tui_deinit
+ * @see tui_init_all
+ * @see tui_deinit_all
  * @param tui - pointer to the tui_data that draws on the screen
  */
-void tui_reset(tui_data *tui);
+void tui_reset_all(tui_data *tui);
+
+/**
+ * Deinitialize and set tui domain object to default state.
+ * @see tui_init_all
+ * @see tui_deinit_all
+ * @param tui - pointer to the tui_data that draws on the screen
+ */
+void tui_reset_domain(void *tdata);
+
+/**
+ * Deinitialize and set tui node object to default state.
+ * @see tui_init_all
+ * @see tui_deinit_all
+ * @param tui - pointer to the tui_data that draws on the screen
+ */
+void tui_reset_node(void *tdata);
 
 /**
  * Draw command panel at the bottom of the screen.
@@ -143,8 +195,41 @@ void tui_draw_command_panel();
 void tui_draw_all(tui_data *tui);
 
 /**
+ * Draw the domains screen
+ */
+void tui_draw_domains(void *tui);
+
+/**
  * Draw the help screen
  */
 void tui_draw_help();
 
-#endif // TUI_H
+/** @see dui_draw */
+typedef enum {
+    TUI_MODE_DOMAIN,
+
+    TUI_NODE
+} tui_mode_enum;
+typedef tui_mode_enum tui_mode;
+
+/** Tui init functions */
+typedef void (*tui_init_function)(void *tui_data);
+tui_init_function tui_init[TUI_INIT_FUNCTION_SIZE];
+
+/** Tui deinit functions */
+typedef void (*tui_deinit_function)(void *tui_data);
+tui_deinit_function tui_deinit[TUI_DEINIT_FUNCTION_SIZE];
+
+/** Tui reset functions */
+typedef void (*tui_reset_function)(void *tui_data);
+tui_reset_function tui_reset[TUI_RESET_FUNCTION_SIZE];
+
+/** Tui create functions */
+typedef void (*tui_create_function)(void *tui_data, void *virt_data);
+tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE];
+
+/** Tui draw functions */
+typedef void (*tui_draw_function)(void *tui_data);
+tui_draw_function tui_draw[TUI_DRAW_FUNCTION_SIZE];
+
+#endif /* TUI_H */

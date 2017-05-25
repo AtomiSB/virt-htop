@@ -65,13 +65,13 @@ typedef struct tui_domain_data {
  * Set domain columns object to default state.
  * @param tui - pointer to the tui_domain_data that draws on the screen
  */
-void tui_init_default_domain_columns(tui_domain_data *tui);
+void tui_init_all_domain_columns(tui_domain_data *tui);
 
 /**
  * Deinitialize the domain columns object.
- * @param tui - pointer to the tui_domain_data that draws on the screen
+ * @param tdata - pointer to the tui_domain_data that draws on the screen
  */
-void tui_deinit_domain_columns(tui_domain_data *tui);
+void tui_deinit_domain_columns(void *tdata);
 
 /**
  * Draw column's header, right above it.

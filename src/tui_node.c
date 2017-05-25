@@ -27,7 +27,7 @@ const char *tui_node_info_type[TUI_NODE_INFO_SIZE] = {
     "  Memory:"
 };
 
-void tui_init_default_node_data(tui_node_data *tui)
+void tui_init_all_node_data(tui_node_data *tui)
 {
     tui->node_memory_size    = NULL;
     for (int i = 0; i != TUI_NODE_INFO_SIZE; ++i) {
