@@ -34,8 +34,6 @@
 #define CONNECTION_SYSTEM (":///system")
 /** Session connection */
 #define CONNECTION_SESSION (":///session")
-/** Number of possible node data types */
-#define VIRT_NODE_DATA_TYPE_SIZE (4)
 
 /** List of virt errors */
 typedef enum {
@@ -55,28 +53,6 @@ typedef struct {
     virDomainPtr    *domain;        /** Pointer to existing domains */
     size_t          domain_size;    /** Total number of existing domains */
 } virt_data;
-
-/**
- * Indecies of the virt_node_data array.
- * @see virt_node_data
- */
-typedef enum {
-    VIRT_NODE_DATA_TYPE_HOSTNAME,
-    VIRT_NODE_DATA_TYPE_URI,
-    VIRT_NODE_DATA_TYPE_LIB_VERSION,
-    VIRT_NODE_DATA_TYPE_TOTAL_MEMORY
-} virt_node_data_enum;
-
-/** @see virt_node_data_enum */
-typedef virt_node_data_enum node_type;
-
-/** Structure representing current node data. */
-typedef struct {
-    /** Array containing node's data */
-    char        *node_data[VIRT_NODE_DATA_TYPE_SIZE];
-    /** Array containing current node data indecies */
-    node_type   node_type[VIRT_NODE_DATA_TYPE_SIZE];
-} virt_node_data;
 
 /**
  * Set all virt data's parameters to default values.
@@ -100,27 +76,5 @@ void virt_deinit(virt_data *virt);
  * @see virt_data
  */
 void virt_reset(virt_data *virt);
-
-/**
- * Initializes virt_node_data object to default values.
- * @param data - data to be initialized
- * @see virt_node_data
- */
-void virt_init_node_default(virt_node_data *data);
-
-/**
- * Deinitializes virt_node_data object.
- * @param data - data to be freed
- * @see virt_init_node_default
- */
-void virt_deinit_node_default(virt_node_data *data);
-
-/**
- * This function deinitializes the object and then sets it to default parameters.
- * @param virt - data to be deinitialized and initialized again.
- * @see virt_init_node_default
- * @see virt_deinit_node_default
- */
-virt_node_data virt_node_collect_data(virt_data *virt);
 
 #endif /* VIRT_H */

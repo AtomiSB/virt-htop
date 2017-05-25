@@ -22,6 +22,7 @@
 /** @file tui_node.h 
  * This file contains routines to draw terminal output using ncurses */
 #include "tui.h"
+#include "virt_node.h"
 /** Size of array containing strings of node info */
 #define TUI_NODE_INFO_SIZE (5)
 /** Size of array containing strings of node summary */

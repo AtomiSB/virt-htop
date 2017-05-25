@@ -63,20 +63,6 @@ void virt_reset(virt_data *virt)
     virt_init_default(virt);
 }
 
-void virt_init_node_default(virt_node_data *data)
-{
-    for (int i = 0; i != VIRT_NODE_DATA_TYPE_SIZE; ++i) {
-        data->node_data[i] = NULL;
-        data->node_type[i] = i;
-    }
-}
-
-void virt_deinit_node_default(virt_node_data *data)
-{
-    for (int i = 0; i != VIRT_NODE_DATA_TYPE_SIZE; ++i)
-        free(data->node_data[i]);
-}
-
 virConnectPtr virt_connect_node(char **conn_args)
 {
     virConnectPtr conn = NULL;
@@ -90,34 +76,4 @@ virConnectPtr virt_connect_node(char **conn_args)
             conn = virConnectOpenAuth(conn_args[0], virConnectAuthPtrDefault, 0);
     }
     return conn;
-}
-
-virt_node_data virt_node_collect_data(virt_data *virt)
-{
-    virt_node_data data;
-    virt_init_node_default(&data);
-
-    size_t type = 0;
-    unsigned long lib_version = 0;
-
-    virNodeInfoPtr info = malloc(sizeof(virNodeInfo));
-    virNodeGetInfo(virt->conn, info);
-
-    virConnectGetLibVersion(virt->conn, &lib_version);
-
-    /* set up indices */
-    data.node_type[type++]  = VIRT_NODE_DATA_TYPE_HOSTNAME;
-    data.node_type[type++]  = VIRT_NODE_DATA_TYPE_URI;
-    data.node_type[type++]  = VIRT_NODE_DATA_TYPE_LIB_VERSION;
-    data.node_type[type++]  = VIRT_NODE_DATA_TYPE_TOTAL_MEMORY;
-
-    /* fetch the data */
-    data.node_data[VIRT_NODE_DATA_TYPE_HOSTNAME]       = virConnectGetHostname(virt->conn);
-    data.node_data[VIRT_NODE_DATA_TYPE_URI]            = virConnectGetURI(virt->conn);
-    data.node_data[VIRT_NODE_DATA_TYPE_LIB_VERSION]    = double_to_str(LIB_VERSION(lib_version));
-    data.node_data[VIRT_NODE_DATA_TYPE_TOTAL_MEMORY]   = ull_to_str(info->memory/1024);
-
-    free(info);
-
-    return data;
 }
