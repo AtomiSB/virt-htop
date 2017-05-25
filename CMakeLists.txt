@@ -21,6 +21,7 @@ set(SOURCES
 ./src/main.c
 ./src/utils.c
 ./src/virt.c
+./src/virt_domain.c
 ./src/arguments.c
 ./src/tui.c
 ./src/tui_node.c

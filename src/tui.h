@@ -24,6 +24,7 @@
 #include <ncurses.h>
 #include <menu.h>
 #include "virt.h"
+#include "virt_domain.h"
 #include "tui_node.h"
 #include "tui_domain.h"
 /** Input delay between keystrokes in milliseconds */
