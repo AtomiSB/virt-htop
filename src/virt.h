@@ -34,6 +34,12 @@
 #define CONNECTION_SYSTEM (":///system")
 /** Session connection */
 #define CONNECTION_SESSION (":///session")
+/** Size of array containing function pointers to virt init functions */
+#define VIRT_INIT_FUNCTION_SIZE (1 + 1)
+/** Size of array containing function pointers to virt deinit functions */
+#define VIRT_DEINIT_FUNCTION_SIZE (1 + 1)
+/** Size of array containing function pointers to virt reset functions */
+#define VIRT_RESET_FUNCTION_SIZE (1 + 1)
 
 /** List of virt errors */
 typedef enum {
@@ -47,6 +53,13 @@ void virt_error_function(void *userdata, virErrorPtr error);
 /** Initiate libvirt, this function must be called before other virt_* functions. */
 void virt_setup();
 
+/**
+ * Connect to target node
+ * @param conn_args - Target domain URL with parameters
+ * @return valid virConnectPtr, NULL otherwise
+ */
+virConnectPtr virt_connect_node(char **conn_args);
+
 /** Handler to the libvirt's API. */
 typedef struct {
     virConnectPtr   conn;           /** Connection pointer to target node */
@@ -59,22 +72,30 @@ typedef struct {
  * @param virt - Pointer with virt data
  * @see virt_data
  */
-void virt_init_default(virt_data *virt);
+void virt_init_all(virt_data *virt);
 
 /**
  * Deinitialize virt data's pointers.
  * @param virt - Pointer with virt data
  * @see virt_data
  */
-void virt_deinit(virt_data *virt);
+void virt_deinit_all(virt_data *virt);
 
 /**
  * Deinitialize virt data first and then set it's data to default values.
  * @param virt - Pointer with virt data
- * @see virt_deinit
- * @see virt_init_default
+ * @see virt_deinit_all
+ * @see virt_init_all
  * @see virt_data
  */
-void virt_reset(virt_data *virt);
+void virt_reset_all(virt_data *virt);
+
+/** virt init functions */
+typedef void (*virt_init_function)(void *vdata);
+virt_init_function virt_init[VIRT_INIT_FUNCTION_SIZE];
+
+/** virt deinit functions */
+typedef void (*virt_deinit_function)(void *vdata);
+virt_deinit_function virt_deinit[VIRT_DEINIT_FUNCTION_SIZE];
 
 #endif /* VIRT_H */

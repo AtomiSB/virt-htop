@@ -21,24 +21,34 @@
 #include "virt_node.h"
 #include "utils.h"
 
-void virt_init_node_default(virt_node_data *data)
+void virt_init_node_data(void *vdata)
 {
+    virt_node_data *data = (virt_node_data *)vdata;
+
     for (int i = 0; i != VIRT_NODE_DATA_TYPE_SIZE; ++i) {
         data->node_data[i] = NULL;
         data->node_type[i] = i;
     }
 }
 
-void virt_deinit_node_default(virt_node_data *data)
+void virt_deinit_node_data(void *vdata)
 {
+    virt_node_data *data = (virt_node_data *)vdata;
+
     for (int i = 0; i != VIRT_NODE_DATA_TYPE_SIZE; ++i)
         free(data->node_data[i]);
+}
+
+void virt_reset_node_data(void *vdata)
+{
+    virt_init_node_data(vdata);
+    virt_deinit_node_data(vdata);
 }
 
 virt_node_data virt_node_collect_data(virt_data *virt)
 {
     virt_node_data data;
-    virt_init_node_default(&data);
+    virt_init_node_data(&data);
 
     size_t type = 0;
     unsigned long lib_version = 0;

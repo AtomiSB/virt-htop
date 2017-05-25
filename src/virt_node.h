@@ -48,23 +48,30 @@ typedef struct {
 
 /**
  * Initializes virt_node_data object to default values.
- * @param data - data to be initialized
+ * @param vdata - data to be initialized
  * @see virt_node_data
  */
-void virt_init_node_default(virt_node_data *data);
+void virt_init_node_data(void *vdata);
 
 /**
  * Deinitializes virt_node_data object.
- * @param data - data to be freed
- * @see virt_init_node_default
+ * @param vdata - data to be freed
+ * @see virt_init_node_data
  */
-void virt_deinit_node_default(virt_node_data *data);
+void virt_deinit_node_data(void *vdata);
+
+/**
+ * First deinitialize the virt_node_data object and then default init it.
+ * @param vdata - data to be freed
+ * @see virt_init_node_data
+ */
+void virt_reset_node_data(void *vdata);
 
 /**
  * This function deinitializes the object and then sets it to default parameters.
  * @param virt - data to be deinitialized and initialized again.
- * @see virt_init_node_default
- * @see virt_deinit_node_default
+ * @see virt_init_node_data
+ * @see virt_deinit_node_data
  */
 virt_node_data virt_node_collect_data(virt_data *virt);
 

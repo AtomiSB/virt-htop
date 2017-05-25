@@ -64,6 +64,7 @@ typedef enum {
 
 /** Represents keys used for manipulating TUI */
 typedef enum {
+    TUI_KEY_MODE_ONE          = '1',
     TUI_KEY_LIST_DOWN         = 'j',
     TUI_KEY_LIST_UP           = 'k',
     TUI_KEY_COMMAND_HELP      = '?',
@@ -231,4 +232,4 @@ tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE];
 typedef void (*tui_draw_function)(void *tui_data);
 tui_draw_function tui_draw[TUI_DRAW_FUNCTION_SIZE];
 
-#endif // TUI_H
+#endif /* TUI_H */

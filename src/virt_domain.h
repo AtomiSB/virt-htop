@@ -132,33 +132,26 @@ const char *virt_domain_crashed_reason[VIRT_DOMAIN_CRASHED_SIZE];
 const char *virt_domain_pmsuspended_reason[VIRT_DOMAIN_PMSUSPENDED_SIZE];
 
 /**
- * Set all data to default state.
- * @param data - Object to be filled with domains data
+ * Set domain data to default state.
+ * @param vdata - Object to be filled with domains data
  * @see virt_deinit_domain
  */
-void virt_init_domain_default(virt_domain_data *data);
+void virt_init_domain_data(void *vdata);
 
 /**
- * Deinitialize the data object.
- * @param data - Object filled with domains data
+ * Deinitialize the domain data object.
+ * @param vdata - Object filled with domains data
  * @see virt_init_domain_default
  */
-void virt_deinit_domain(virt_domain_data *data);
+void virt_deinit_domain_data(void *vdata);
 
 /**
- * First deinitialize the data object and then default init it.
- * @param data - Object filled with domains data
- * @see virt_init_domain_default
- * @see virt_deinit_domain
+ * First deinitialize the domain data object and then default init it.
+ * @param vdata - Object filled with domains data
+ * @see virt_init_domain_data
+ * @see virt_deinit_domain_data
  */
-void virt_reset_domain(virt_domain_data *data);
-
-/**
- * Connect to target node
- * @param conn_args - Target domain URL with parameters
- * @return valid virConnectPtr, NULL otherwise
- */
-virConnectPtr virt_connect_node(char **conn_args);
+void virt_reset_domain_data(void *vdata);
 
 /**
  * Gather all the information about domains states.

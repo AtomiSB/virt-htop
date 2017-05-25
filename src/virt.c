@@ -19,6 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "virt.h"
+#include "virt_node.h"
+#include "virt_domain.h"
 #include "utils.h"
 #include "tui.h"
 #include <stdio.h>
@@ -36,7 +38,7 @@ void virt_setup()
     virSetErrorFunc(NULL, virt_error_function);
 }
 
-void virt_init_default(virt_data *virt)
+void virt_init_all(virt_data *virt)
 {
     virt->domain        = NULL;
     virt->domain_size   = 0;
@@ -50,17 +52,17 @@ static void virt_free_domains(virt_data *virt)
     free(virt->domain);
 }
 
-void virt_deinit(virt_data *virt)
+void virt_deinit_all(virt_data *virt)
 {
     virt_free_domains(virt);
 
     virConnectClose(virt->conn);
 }
 
-void virt_reset(virt_data *virt)
+void virt_reset_all(virt_data *virt)
 {
     virt_free_domains(virt);
-    virt_init_default(virt);
+    virt_init_all(virt);
 }
 
 virConnectPtr virt_connect_node(char **conn_args)
@@ -77,3 +79,15 @@ virConnectPtr virt_connect_node(char **conn_args)
     }
     return conn;
 }
+
+virt_init_function virt_init[VIRT_INIT_FUNCTION_SIZE] = {
+    virt_init_domain_data,
+
+    virt_init_node_data
+};
+
+virt_deinit_function virt_deinit[VIRT_DEINIT_FUNCTION_SIZE] = {
+    virt_deinit_domain_data,
+
+    virt_deinit_node_data
+};

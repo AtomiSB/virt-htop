@@ -27,6 +27,7 @@ int main_loop(virt_data *virt, tui_data *tui)
 {
     tui_mode current_mode = TUI_MODE_DOMAIN;
 
+    /*virt_collect_data[current_mode](virt);*/
     /* collect data from all domains */
     virt_domain_data domain_data = virt_domain_collect_data(virt);
     /* collect data from node */
@@ -61,6 +62,10 @@ int main_loop(virt_data *virt, tui_data *tui)
             switch (user_input) {
                 case KEY_F(TUI_COMMAND_KEY_QUIT): case TUI_KEY_QUIT: {
                     quit = TRUE;
+                    break;
+                }
+                case TUI_KEY_MODE_ONE: {
+                    current_mode = TUI_MODE_DOMAIN;
                     break;
                 }
                 case KEY_DOWN: case TUI_KEY_LIST_DOWN: {
@@ -146,7 +151,7 @@ int main_loop(virt_data *virt, tui_data *tui)
             /* reset tui and virt data*/
             tui_reset[current_mode](tui);
             tui_reset[TUI_NODE](tui);
-            virt_reset(virt);
+            virt_reset_all(virt);
 
             /* collect data from all domains*/
             domain_data = virt_domain_collect_data(virt);
@@ -210,7 +215,7 @@ int main(int argc, const char **argv)
     
     /* data associated with libvirt */
     virt_data virt;
-    virt_init_default(&virt);
+    virt_init_all(&virt);
 
     /* connect to the node */
     virt.conn = virt_connect_node(conn_args);
@@ -232,7 +237,7 @@ int main(int argc, const char **argv)
     /* deinit data */
     endwin();
     tui_deinit_all(&tui);
-    virt_deinit(&virt);
+    virt_deinit_all(&virt);
     free_pointer_char(conn_args, conn_args + options_count[CONNECT_SHORT]);
 
     closelog();
