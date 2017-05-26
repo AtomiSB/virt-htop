@@ -70,6 +70,7 @@ void tui_init_all(tui_data *tui)
 {
     for (int i = 0; i != TUI_INIT_FUNCTION_SIZE; ++i) 
         tui_init[i](tui);
+    tui_init_node(tui);
 }
 
 void tui_init_domain(void *tdata)
@@ -92,6 +93,7 @@ void tui_deinit_all(tui_data *tui)
 {
     for (int i = 0; i != TUI_DEINIT_FUNCTION_SIZE; ++i) 
         tui_deinit[i](tui);
+    tui_deinit_node(tui);
 }
 
 void tui_deinit_node(void *tdata)
@@ -205,24 +207,18 @@ void tui_draw_help()
 
 tui_init_function tui_init[TUI_INIT_FUNCTION_SIZE] = {
     tui_init_domain,
-
-    tui_init_node
 };
 
 tui_deinit_function tui_deinit[TUI_DEINIT_FUNCTION_SIZE] = {
     tui_deinit_domain,
-
-    tui_deinit_node
 };
 
 tui_reset_function tui_reset[TUI_RESET_FUNCTION_SIZE] = {
     tui_reset_domain,
-
-    tui_reset_node
 };
 
 tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE] = {
-    NULL
+    tui_create_domain
 };
 
 tui_draw_function tui_draw[TUI_DRAW_FUNCTION_SIZE] = {

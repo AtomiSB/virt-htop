@@ -38,11 +38,11 @@
 /** Size of array containing pairs (key, desc) used in printing helpful information */
 #define TUI_HELP_KEYS_SIZE (8)
 /** Size of array containing function pointers to tui init functions */
-#define TUI_INIT_FUNCTION_SIZE (1 + 1)
+#define TUI_INIT_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to tui deinit functions */
-#define TUI_DEINIT_FUNCTION_SIZE (1 + 1)
+#define TUI_DEINIT_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to tui reset functions */
-#define TUI_RESET_FUNCTION_SIZE (1 + 1)
+#define TUI_RESET_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to tui create functions */
 #define TUI_CREATE_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to tui draw functions */

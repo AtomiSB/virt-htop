@@ -27,18 +27,12 @@ int main_loop(virt_data *virt, tui_data *tui)
 {
     tui_mode current_mode = TUI_MODE_DOMAIN;
 
-    /*virt_collect_data[current_mode](virt);*/
-    /* collect data from all domains */
-    virt_domain_data domain_data = virt_domain_collect_data(virt);
-    /* collect data from node */
-    virt_node_data node_data = virt_node_collect_data(virt);
-
-    /* generate domains */
-    tui_create_columns(tui->domain_data, &domain_data);
+    /* generate tui */
+    tui_create[current_mode](tui, virt_get[current_mode](virt));
+    /* get data from node */
+    virt_node_data node_data = virt_get_node_data(virt);
     /* generate node panel */
     tui_create_node_panel(tui->node_data, &node_data);
-    /* added memory data */
-    tui_node_update_memory_data(tui->node_data, &domain_data);
 
     tui_draw[current_mode](tui);
 
@@ -150,19 +144,15 @@ int main_loop(virt_data *virt, tui_data *tui)
 
             /* reset tui and virt data*/
             tui_reset[current_mode](tui);
-            tui_reset[TUI_NODE](tui);
+            tui_reset_node(tui);
             virt_reset_all(virt);
 
-            /* collect data from all domains*/
-            domain_data = virt_domain_collect_data(virt);
-            tui_create_columns(tui->domain_data, &domain_data);
+            /* generate tui */
+            tui_create[current_mode](tui, virt_get[current_mode](virt));
 
-            /* collect data from node*/
-            node_data = virt_node_collect_data(virt);
+            /* get data from node*/
+            node_data = virt_get_node_data(virt);
             tui_create_node_panel(tui->node_data, &node_data);
-
-            /* added memory data */
-            tui_node_update_memory_data(tui->node_data, &domain_data);
 
             tui_draw[current_mode](tui);
 

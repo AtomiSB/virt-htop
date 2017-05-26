@@ -22,7 +22,7 @@
 #define VIRT_NODE_H
 #include "virt.h"
 /** Number of possible node data types */
-#define VIRT_NODE_DATA_TYPE_SIZE (4)
+#define VIRT_NODE_DATA_TYPE_SIZE (5)
 
 /**
  * Indecies of the virt_node_data array.
@@ -32,7 +32,8 @@ typedef enum {
     VIRT_NODE_DATA_TYPE_HOSTNAME,
     VIRT_NODE_DATA_TYPE_URI,
     VIRT_NODE_DATA_TYPE_LIB_VERSION,
-    VIRT_NODE_DATA_TYPE_TOTAL_MEMORY
+    VIRT_NODE_DATA_TYPE_TOTAL_MEMORY,
+    VIRT_NODE_DATA_TYPE_DOMAIN_MEMORY
 } virt_node_data_enum;
 
 /** @see virt_node_data_enum */
@@ -69,10 +70,10 @@ void virt_reset_node_data(void *vdata);
 
 /**
  * This function deinitializes the object and then sets it to default parameters.
- * @param virt - data to be deinitialized and initialized again.
+ * @param vdata - data to be deinitialized and initialized again.
  * @see virt_init_node_data
  * @see virt_deinit_node_data
  */
-virt_node_data virt_node_collect_data(virt_data *virt);
+virt_node_data virt_get_node_data(virt_data *virt);
 
 #endif /* VIRT_NODE_H */

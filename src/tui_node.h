@@ -51,8 +51,6 @@ const char *tui_node_info_summary[TUI_NODE_INFO_SUMMARY_SIZE];
 typedef struct tui_node_data {
     char            *node_data[TUI_NODE_INFO_SIZE]; /** Node data strings */
     tui_node_type   node_type[TUI_NODE_INFO_SIZE];  /** Keeps track of node info index position */
-
-    char *node_memory_size;     /** RAM size of the node */
 } tui_node_data;
 
 /**

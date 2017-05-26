@@ -35,11 +35,13 @@
 /** Session connection */
 #define CONNECTION_SESSION (":///session")
 /** Size of array containing function pointers to virt init functions */
-#define VIRT_INIT_FUNCTION_SIZE (1 + 1)
+#define VIRT_INIT_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to virt deinit functions */
-#define VIRT_DEINIT_FUNCTION_SIZE (1 + 1)
+#define VIRT_DEINIT_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to virt reset functions */
-#define VIRT_RESET_FUNCTION_SIZE (1 + 1)
+#define VIRT_RESET_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to virt get functions */
+#define VIRT_GET_FUNCTION_SIZE (1)
 
 /** List of virt errors */
 typedef enum {
@@ -97,5 +99,9 @@ virt_init_function virt_init[VIRT_INIT_FUNCTION_SIZE];
 /** virt deinit functions */
 typedef void (*virt_deinit_function)(void *vdata);
 virt_deinit_function virt_deinit[VIRT_DEINIT_FUNCTION_SIZE];
+
+/** virt get functions */
+typedef void *(*virt_get_function)(void *vdata);
+virt_get_function virt_get[VIRT_GET_FUNCTION_SIZE];
 
 #endif /* VIRT_H */
