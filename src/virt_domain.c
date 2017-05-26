@@ -96,10 +96,8 @@ const char *virt_domain_pmsuspended_reason[VIRT_DOMAIN_PMSUSPENDED_SIZE] = {
     "the reason is unknown"
 };
 
-void virt_init_domain_data(void *vdata)
+void virt_init_domain_data(virt_domain_data *data)
 {
-    virt_domain_data *data = (virt_domain_data *)vdata;
-
     for (int i = 0; i != VIRT_DOMAIN_DATA_TYPE_SIZE; ++i) {
         data->domain_data[i] = NULL;
         data->domain_type[i] = i;
@@ -109,18 +107,16 @@ void virt_init_domain_data(void *vdata)
     data->domain_size       = 0;
 }
 
-void virt_deinit_domain_data(void *vdata)
+void virt_deinit_domain_data(virt_domain_data *data)
 {
-    virt_domain_data *data = (virt_domain_data *)vdata;
-
     for (int i = 0; i != VIRT_DOMAIN_DATA_TYPE_SIZE; ++i) 
         free_pointer_char(data->domain_data[i], data->domain_data[i] + data->domain_size);
 }
 
-void virt_reset_domain(void *vdata)
+void virt_reset_domain(virt_domain_data *data)
 {
-    virt_deinit_domain_data(vdata);
-    virt_init_domain_data(vdata);
+    virt_deinit_domain_data(data);
+    virt_init_domain_data(data);
 }
 
 void state_to_stats(virt_domain_data *data, int state)
@@ -232,10 +228,8 @@ void virt_get_domain_memory_data(virt_data *virt, virt_domain_data *data)
     }
 }
 
-void *virt_get_domain_data(void *vdata)
+void *virt_get_domain_data(virt_data *virt)
 {
-    virt_data *virt = (virt_data *)vdata;
-
     /* get defined domains */
     virt->domain_size = virConnectListAllDomains(virt->conn, &virt->domain, 0);
 

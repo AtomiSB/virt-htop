@@ -80,14 +80,6 @@ virConnectPtr virt_connect_node(char **conn_args)
     return conn;
 }
 
-virt_init_function virt_init[VIRT_INIT_FUNCTION_SIZE] = {
-    virt_init_domain_data,
-};
-
-virt_deinit_function virt_deinit[VIRT_DEINIT_FUNCTION_SIZE] = {
-    virt_deinit_domain_data,
-};
-
 virt_get_function virt_get[VIRT_GET_FUNCTION_SIZE] = {
     virt_get_domain_data,
 };

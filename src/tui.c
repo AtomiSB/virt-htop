@@ -122,9 +122,9 @@ void tui_reset_node(tui_data *tui)
     tui_init_node(tui);
 }
 
-void tui_create_domain_wrapper(tui_data *tui, void *vdata)
+void tui_create_domain_wrapper(tui_data *tui, virt_data *virt)
 {
-    tui_create_domain(tui->domain_data, vdata);
+    tui_create_domain(tui->domain_data, virt);
 }
 
 void tui_draw_command_panel()

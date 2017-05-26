@@ -192,10 +192,10 @@ void tui_reset_node(tui_data *tui);
 /*
  * Call tui_create_domain with tui->domain_data
  * @param tui   - pointer to the tui_data that draws on the screen
- * @param vdata - virt data pointer
+ * @param virt - virt data pointer
  * @see tui_create_domain
  */
-void tui_create_domain_wrapper(tui_data *tui, void *vdata);
+void tui_create_domain_wrapper(tui_data *tui, virt_data *virt);
 
 /**
  * Draw command panel at the bottom of the screen.
@@ -258,7 +258,7 @@ typedef void (*tui_reset_function)(tui_data *tui);
 tui_reset_function tui_reset[TUI_RESET_FUNCTION_SIZE];
 
 /** tui create functions */
-typedef void (*tui_create_function)(tui_data *tui, void *virt_data);
+typedef void (*tui_create_function)(tui_data *tui, virt_data *virt);
 tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE];
 
 /** tui draw functions */
