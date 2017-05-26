@@ -139,13 +139,13 @@ void tui_init_all(tui_data *tui);
  * Set tui domain object to default state.
  * @param tui - pointer to the tui_domain_data that draws on the screen
  */
-void tui_init_domain(void *tdata);
+void tui_init_domain(tui_data *tui);
 
 /**
  * Set tui node object to default state.
  * @param tui - pointer to the tui_domain_data that draws on the screen
  */
-void tui_init_node(void *tdata);
+void tui_init_node(tui_data *tui);
 
 /**
  * Deinitialize the tui object.
@@ -155,15 +155,15 @@ void tui_deinit_all(tui_data *tui);
 
 /**
  * Deinitialize the tui domain object.
- * @param tdata - pointer to the tui_data that draws on the screen
+ * @param tui - pointer to the tui_data that draws on the screen
  */
-void tui_deinit_domain(void *tdata);
+void tui_deinit_domain(tui_data *tui);
 
 /**
  * Deinitialize the tui node object.
- * @param tdata - pointer to the tui_data that draws on the screen
+ * @param tui - pointer to the tui_data that draws on the screen
  */
-void tui_deinit_node(void *tdata);
+void tui_deinit_node(tui_data *tui);
 
 /**
  * Deinitialize and set tui object to default state.
@@ -179,7 +179,7 @@ void tui_reset_all(tui_data *tui);
  * @see tui_deinit_all
  * @param tui - pointer to the tui_data that draws on the screen
  */
-void tui_reset_domain(void *tdata);
+void tui_reset_domain(tui_data *tui);
 
 /**
  * Deinitialize and set tui node object to default state.
@@ -187,7 +187,15 @@ void tui_reset_domain(void *tdata);
  * @see tui_deinit_all
  * @param tui - pointer to the tui_data that draws on the screen
  */
-void tui_reset_node(void *tdata);
+void tui_reset_node(tui_data *tui);
+
+/*
+ * Call tui_create_domain with tui->domain_data
+ * @param tui   - pointer to the tui_data that draws on the screen
+ * @param vdata - virt data pointer
+ * @see tui_create_domain
+ */
+void tui_create_domain_wrapper(tui_data *tui, void *vdata);
 
 /**
  * Draw command panel at the bottom of the screen.
@@ -203,55 +211,70 @@ void tui_draw_all(tui_data *tui);
 /**
  * Draw the domains screen
  */
-void tui_draw_domains(void *tui);
+void tui_draw_domains(tui_data *tui);
 
 /**
  * Draw the help screen
  */
 void tui_draw_help();
 
-void tui_menu_driver_domain(void *tdata, int type);
-int tui_menu_index_domain(void *tdata);
-void tui_menu_set_index_domain(void *tdata, int index);
+/**
+ * Run request on domain menu.
+ * @param tui   - pointer to the tui_data that draws on the screen
+ * @param type  - ncurses menu library REQ type
+ */
+void tui_menu_driver_domain(tui_data *tui, int type);
+
+/**
+ * Return current index of domain_column
+ * @param tui - pointer to the tui_data that draws on the screen
+ * @return current index of domain column
+ */
+int tui_menu_index_domain(tui_data *tui);
+
+/**
+ * Set current index for each domain column
+ * @param tui   - pointer to the tui_data that draws on the screen
+ * @param index - current index of domain column
+ */
+void tui_menu_set_index_domain(tui_data *tui, int index);
 
 /** @see dui_draw */
 typedef enum {
     TUI_MODE_DOMAIN,
-
-    TUI_NODE
 } tui_mode_enum;
 typedef tui_mode_enum tui_mode;
 
 /** tui init functions */
-typedef void (*tui_init_function)(void *tui_data);
+typedef void (*tui_init_function)(tui_data *tui);
 tui_init_function tui_init[TUI_INIT_FUNCTION_SIZE];
 
 /** tui deinit functions */
-typedef void (*tui_deinit_function)(void *tui_data);
+typedef void (*tui_deinit_function)(tui_data *tui);
 tui_deinit_function tui_deinit[TUI_DEINIT_FUNCTION_SIZE];
 
 /** tui reset functions */
-typedef void (*tui_reset_function)(void *tui_data);
+typedef void (*tui_reset_function)(tui_data *tui);
 tui_reset_function tui_reset[TUI_RESET_FUNCTION_SIZE];
 
 /** tui create functions */
-typedef void (*tui_create_function)(void *tui_data, void *virt_data);
+typedef void (*tui_create_function)(tui_data *tui, void *virt_data);
 tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE];
 
 /** tui draw functions */
-typedef void (*tui_draw_function)(void *tui_data);
+typedef void (*tui_draw_function)(tui_data *tui);
 tui_draw_function tui_draw[TUI_DRAW_FUNCTION_SIZE];
 
 /** tui menu driver functions */
-typedef void (*tui_menu_driver_function)(void *tui_data, int type);
+typedef void (*tui_menu_driver_function)(tui_data *tui, int type);
 tui_menu_driver_function tui_menu_driver[TUI_MENU_DRIVER_FUNCTION_SIZE];
 
 /** tui menu index functions */
-typedef int (*tui_menu_index_function)(void *tui_data);
+typedef int (*tui_menu_index_function)(tui_data *tui);
 tui_menu_index_function tui_menu_index[TUI_MENU_INDEX_FUNCTION_SIZE];
 
-/** tui menu index functions */
-typedef void (*tui_menu_set_index_function)(void *tui_data, int index);
+/** tui menu set index functions */
+typedef void (*tui_menu_set_index_function)(tui_data *tui, int index);
 tui_menu_set_index_function tui_menu_set_index[TUI_MENU_SET_INDEX_FUNCTION_SIZE];
 
 #endif /* TUI_H */

@@ -73,18 +73,14 @@ void tui_init_all(tui_data *tui)
     tui_init_node(tui);
 }
 
-void tui_init_domain(void *tdata)
+void tui_init_domain(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui->domain_data    = malloc(sizeof(tui_domain_data));
     tui_init_all_domain_columns(tui->domain_data);
 }
 
-void tui_init_node(void *tdata)
+void tui_init_node(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui->node_data      = malloc(sizeof(tui_node_data));
     tui_init_all_node_data(tui->node_data);
 }
@@ -96,18 +92,14 @@ void tui_deinit_all(tui_data *tui)
     tui_deinit_node(tui);
 }
 
-void tui_deinit_node(void *tdata)
+void tui_deinit_node(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui_deinit_node_data(tui->node_data);
     free(tui->node_data);
 }
 
-void tui_deinit_domain(void *tdata)
+void tui_deinit_domain(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui_deinit_domain_columns(tui->domain_data);
     free(tui->domain_data);
 }
@@ -118,16 +110,21 @@ void tui_reset_all(tui_data *tui)
     tui_init_all(tui);
 }
 
-void tui_reset_domain(void *tdata)
+void tui_reset_domain(tui_data *tui)
 {
-    tui_deinit_domain(tdata);
-    tui_init_domain(tdata);
+    tui_deinit_domain(tui);
+    tui_init_domain(tui);
 }
 
-void tui_reset_node(void *tdata)
+void tui_reset_node(tui_data *tui)
 {
-    tui_deinit_node(tdata);
-    tui_init_node(tdata);
+    tui_deinit_node(tui);
+    tui_init_node(tui);
+}
+
+void tui_create_domain_wrapper(tui_data *tui, void *vdata)
+{
+    tui_create_domain(tui->domain_data, vdata);
 }
 
 void tui_draw_command_panel()
@@ -167,10 +164,8 @@ void tui_draw_command_panel()
     attroff(COLOR_PAIR(TUI_COLOR_COMMAND_PANEL_TEXT));
 }
 
-void tui_draw_domains(void *tdata)
+void tui_draw_domains(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui_draw_node_panel(tui->node_data);
     tui_draw_column_header(tui);
     tui_draw_domain_columns(tui->domain_data);
@@ -205,22 +200,19 @@ void tui_draw_help()
     timeout(TUI_INPUT_DELAY); /* make input non-blocking with expected timeout */
 }
 
-void tui_menu_driver_domain(void *tdata, int type)
+void tui_menu_driver_domain(tui_data *tui, int type)
 {
-    tui_data *tui = (tui_data*)tdata;
     for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
         menu_driver(tui->domain_data->domain_column[i], type);
 }
 
-int tui_menu_index_domain(void *tdata)
+int tui_menu_index_domain(tui_data *tui)
 {
-    tui_data *tui = (tui_data*)tdata;
     return item_index(current_item(tui->domain_data->domain_column[0]));
 }
 
-void tui_menu_set_index_domain(void *tdata, int index)
+void tui_menu_set_index_domain(tui_data *tui, int index)
 {
-    tui_data *tui = (tui_data*)tdata;
     if (tui->domain_data->domain_size > 1)
         for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
             set_current_item(   tui->domain_data->domain_column[i], 
@@ -240,7 +232,7 @@ tui_reset_function tui_reset[TUI_RESET_FUNCTION_SIZE] = {
 };
 
 tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE] = {
-    tui_create_domain
+    tui_create_domain_wrapper
 };
 
 tui_draw_function tui_draw[TUI_DRAW_FUNCTION_SIZE] = {

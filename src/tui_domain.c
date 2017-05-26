@@ -59,10 +59,8 @@ void tui_init_all_domain_columns(tui_domain_data *tui)
     tui->domain_size = 0;
 }
 
-void tui_deinit_domain_columns(void *tdata)
+void tui_deinit_domain_columns(tui_domain_data *tui)
 {
-    tui_domain_data *tui = (tui_domain_data *)tdata;
-
     /* free columns */
     if (tui->domain_column) {
         for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i) {
@@ -167,10 +165,8 @@ void tui_draw_domain_columns(tui_domain_data *tui)
     }
 }
 
-void tui_create_domain(void *tdata, void *vdata)
+void tui_create_domain(tui_domain_data *tui, void *vdata)
 {
-    tui_data *tui_object    = (tui_data *)tdata;
-    tui_domain_data *tui    = tui_object->domain_data;
     virt_domain_data *data  = (virt_domain_data *)vdata;
     /* last item counts as NULL */
     tui->domain_size = data->domain_size;
