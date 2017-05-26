@@ -45,7 +45,7 @@ void virt_reset_node_data(void *vdata)
     virt_deinit_node_data(vdata);
 }
 
-virt_node_data virt_node_collect_data(virt_data *virt)
+virt_node_data virt_get_node_data(virt_data *virt)
 {
     virt_node_data data;
     virt_init_node_data(&data);
@@ -63,12 +63,17 @@ virt_node_data virt_node_collect_data(virt_data *virt)
     data.node_type[type++]  = VIRT_NODE_DATA_TYPE_URI;
     data.node_type[type++]  = VIRT_NODE_DATA_TYPE_LIB_VERSION;
     data.node_type[type++]  = VIRT_NODE_DATA_TYPE_TOTAL_MEMORY;
+    data.node_type[type++]  = VIRT_NODE_DATA_TYPE_DOMAIN_MEMORY;
 
     /* fetch the data */
+    unsigned long long memory       = info->memory/1024;
+    unsigned long long allocated    = memory - virNodeGetFreeMemory(virt->conn)/1024/1024;
+
     data.node_data[VIRT_NODE_DATA_TYPE_HOSTNAME]       = virConnectGetHostname(virt->conn);
     data.node_data[VIRT_NODE_DATA_TYPE_URI]            = virConnectGetURI(virt->conn);
     data.node_data[VIRT_NODE_DATA_TYPE_LIB_VERSION]    = double_to_str(LIB_VERSION(lib_version));
-    data.node_data[VIRT_NODE_DATA_TYPE_TOTAL_MEMORY]   = ull_to_str(info->memory/1024);
+    data.node_data[VIRT_NODE_DATA_TYPE_TOTAL_MEMORY]   = ull_to_str(memory);
+    data.node_data[VIRT_NODE_DATA_TYPE_DOMAIN_MEMORY]  = ull_to_str(allocated);
 
     free(info);
 

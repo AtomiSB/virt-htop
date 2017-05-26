@@ -70,20 +70,17 @@ void tui_init_all(tui_data *tui)
 {
     for (int i = 0; i != TUI_INIT_FUNCTION_SIZE; ++i) 
         tui_init[i](tui);
+    tui_init_node(tui);
 }
 
-void tui_init_domain(void *tdata)
+void tui_init_domain(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui->domain_data    = malloc(sizeof(tui_domain_data));
     tui_init_all_domain_columns(tui->domain_data);
 }
 
-void tui_init_node(void *tdata)
+void tui_init_node(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui->node_data      = malloc(sizeof(tui_node_data));
     tui_init_all_node_data(tui->node_data);
 }
@@ -92,20 +89,17 @@ void tui_deinit_all(tui_data *tui)
 {
     for (int i = 0; i != TUI_DEINIT_FUNCTION_SIZE; ++i) 
         tui_deinit[i](tui);
+    tui_deinit_node(tui);
 }
 
-void tui_deinit_node(void *tdata)
+void tui_deinit_node(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui_deinit_node_data(tui->node_data);
     free(tui->node_data);
 }
 
-void tui_deinit_domain(void *tdata)
+void tui_deinit_domain(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui_deinit_domain_columns(tui->domain_data);
     free(tui->domain_data);
 }
@@ -116,16 +110,21 @@ void tui_reset_all(tui_data *tui)
     tui_init_all(tui);
 }
 
-void tui_reset_domain(void *tdata)
+void tui_reset_domain(tui_data *tui)
 {
-    tui_deinit_domain(tdata);
-    tui_init_domain(tdata);
+    tui_deinit_domain(tui);
+    tui_init_domain(tui);
 }
 
-void tui_reset_node(void *tdata)
+void tui_reset_node(tui_data *tui)
 {
-    tui_deinit_node(tdata);
-    tui_init_node(tdata);
+    tui_deinit_node(tui);
+    tui_init_node(tui);
+}
+
+void tui_create_domain_wrapper(tui_data *tui, virt_data *virt)
+{
+    tui_create_domain(tui->domain_data, virt);
 }
 
 void tui_draw_command_panel()
@@ -165,10 +164,8 @@ void tui_draw_command_panel()
     attroff(COLOR_PAIR(TUI_COLOR_COMMAND_PANEL_TEXT));
 }
 
-void tui_draw_domains(void *tdata)
+void tui_draw_domains(tui_data *tui)
 {
-    tui_data *tui = (tui_data *)tdata;
-
     tui_draw_node_panel(tui->node_data);
     tui_draw_column_header(tui);
     tui_draw_domain_columns(tui->domain_data);
@@ -203,28 +200,53 @@ void tui_draw_help()
     timeout(TUI_INPUT_DELAY); /* make input non-blocking with expected timeout */
 }
 
+void tui_menu_driver_domain(tui_data *tui, int type)
+{
+    for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
+        menu_driver(tui->domain_data->domain_column[i], type);
+}
+
+int tui_menu_index_domain(tui_data *tui)
+{
+    return item_index(current_item(tui->domain_data->domain_column[0]));
+}
+
+void tui_menu_set_index_domain(tui_data *tui, int index)
+{
+    if (tui->domain_data->domain_size > 1)
+        for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
+            set_current_item(   tui->domain_data->domain_column[i], 
+                                tui->domain_data->domain_column[i]->items[index]);
+}
+
 tui_init_function tui_init[TUI_INIT_FUNCTION_SIZE] = {
     tui_init_domain,
-
-    tui_init_node
 };
 
 tui_deinit_function tui_deinit[TUI_DEINIT_FUNCTION_SIZE] = {
     tui_deinit_domain,
-
-    tui_deinit_node
 };
 
 tui_reset_function tui_reset[TUI_RESET_FUNCTION_SIZE] = {
     tui_reset_domain,
-
-    tui_reset_node
 };
 
 tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE] = {
-    NULL
+    tui_create_domain_wrapper
 };
 
 tui_draw_function tui_draw[TUI_DRAW_FUNCTION_SIZE] = {
     tui_draw_domains
+};
+
+tui_menu_driver_function tui_menu_driver[TUI_MENU_DRIVER_FUNCTION_SIZE] = {
+    tui_menu_driver_domain
+};
+
+tui_menu_index_function tui_menu_index[TUI_MENU_INDEX_FUNCTION_SIZE] = {
+    tui_menu_index_domain
+};
+
+tui_menu_set_index_function tui_menu_set_index[TUI_MENU_SET_INDEX_FUNCTION_SIZE] = {
+    tui_menu_set_index_domain
 };

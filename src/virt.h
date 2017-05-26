@@ -29,17 +29,19 @@
 #define LIB_MINOR_VERSION(x) ((x - (LIB_MAJOR_VERSION(x) * 1000000)) / 1000)
 #define LIB_VERSION(x)       (LIB_MAJOR_VERSION(x) + (LIB_MINOR_VERSION(x) * 0.1))
 /** Version number of virt-htop */
-#define VIRT_HTOP_VERSION ("0.1.1")
+#define VIRT_HTOP_VERSION ("0.1.2")
 /** System connection */
 #define CONNECTION_SYSTEM (":///system")
 /** Session connection */
 #define CONNECTION_SESSION (":///session")
 /** Size of array containing function pointers to virt init functions */
-#define VIRT_INIT_FUNCTION_SIZE (1 + 1)
+#define VIRT_INIT_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to virt deinit functions */
-#define VIRT_DEINIT_FUNCTION_SIZE (1 + 1)
+#define VIRT_DEINIT_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to virt reset functions */
-#define VIRT_RESET_FUNCTION_SIZE (1 + 1)
+#define VIRT_RESET_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to virt get functions */
+#define VIRT_GET_FUNCTION_SIZE (1)
 
 /** List of virt errors */
 typedef enum {
@@ -90,12 +92,8 @@ void virt_deinit_all(virt_data *virt);
  */
 void virt_reset_all(virt_data *virt);
 
-/** virt init functions */
-typedef void (*virt_init_function)(void *vdata);
-virt_init_function virt_init[VIRT_INIT_FUNCTION_SIZE];
-
-/** virt deinit functions */
-typedef void (*virt_deinit_function)(void *vdata);
-virt_deinit_function virt_deinit[VIRT_DEINIT_FUNCTION_SIZE];
+/** virt get functions */
+typedef void *(*virt_get_function)(virt_data *virt);
+virt_get_function virt_get[VIRT_GET_FUNCTION_SIZE];
 
 #endif /* VIRT_H */

@@ -69,9 +69,9 @@ void tui_init_all_domain_columns(tui_domain_data *tui);
 
 /**
  * Deinitialize the domain columns object.
- * @param tdata - pointer to the tui_domain_data that draws on the screen
+ * @param tui - pointer to the tui_domain_data that draws on the screen
  */
-void tui_deinit_domain_columns(void *tdata);
+void tui_deinit_domain_columns(tui_domain_data *tui);
 
 /**
  * Draw column's header, right above it.
@@ -91,10 +91,10 @@ ITEM **tui_create_items(char **begin, char **end);
 /**
  * Create string values for items in columns,
  * and copies other crucial data from the data object.
- * @param tui   - pointer to the tui_domain_data that draws on the screen
- * @param data  - pointer to data extracted from libvirt calls.
+ * @param tui - pointer to the tui_domain_data that draws on the screen
+ * @param vdata - pointer to data extracted from libvirt calls.
  */
-void tui_create_columns(tui_domain_data *tui, virt_domain_data *data);
+void tui_create_domain(tui_domain_data *tui, void *vdata);
 
 /**
  * Attach each column to the main window, and create subwindows

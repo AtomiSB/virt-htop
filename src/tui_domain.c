@@ -59,10 +59,8 @@ void tui_init_all_domain_columns(tui_domain_data *tui)
     tui->domain_size = 0;
 }
 
-void tui_deinit_domain_columns(void *tdata)
+void tui_deinit_domain_columns(tui_domain_data *tui)
 {
-    tui_domain_data *tui = (tui_domain_data *)tdata;
-
     /* free columns */
     if (tui->domain_column) {
         for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i) {
@@ -167,13 +165,14 @@ void tui_draw_domain_columns(tui_domain_data *tui)
     }
 }
 
-void tui_create_columns(tui_domain_data *tui, virt_domain_data *data)
+void tui_create_domain(tui_domain_data *tui, void *vdata)
 {
+    virt_domain_data *data  = (virt_domain_data *)vdata;
     /* last item counts as NULL */
     tui->domain_size = data->domain_size;
 
     /* create pointer to menus 'domain columns' */
-    tui->domain_column = calloc(TUI_DOMAIN_COLUMN_SIZE, sizeof(MENU *));
+    tui->domain_column = calloc(TUI_DOMAIN_COLUMN_SIZE, sizeof(MENU));
 
     /* copy domain pointers */
     for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i) {
@@ -203,9 +202,6 @@ void tui_create_columns(tui_domain_data *tui, virt_domain_data *data)
     tui->domain_type[4] = TUI_DOMAIN_COLUMN_MEMORY_PRC;
     tui->domain_type[5] = TUI_DOMAIN_COLUMN_REASON;
 
-    /* copy memory size */
-    tui->domain_memory_size = data->domain_memory_size;
-
     int x = 0, y = 0;
     getmaxyx(stdscr, x, y);
 
@@ -213,4 +209,6 @@ void tui_create_columns(tui_domain_data *tui, virt_domain_data *data)
     tui->domain_columns_win = newwin(x-TUI_HEADER_HEIGHT-1, y, TUI_HEADER_HEIGHT, 0);
     tui->domain_columns_sub_win = malloc(sizeof(WINDOW*) * TUI_DOMAIN_COLUMN_SIZE);
     keypad(tui->domain_columns_win, TRUE);
+
+    free(data);
 }

@@ -29,7 +29,6 @@ const char *tui_node_info_type[TUI_NODE_INFO_SIZE] = {
 
 void tui_init_all_node_data(tui_node_data *tui)
 {
-    tui->node_memory_size    = NULL;
     for (int i = 0; i != TUI_NODE_INFO_SIZE; ++i) {
         tui->node_data[i] = NULL;
         tui->node_type[i] = i;
@@ -53,6 +52,8 @@ void tui_create_node_panel(tui_node_data *tui, virt_node_data *data)
         data->node_data[data->node_type[VIRT_NODE_DATA_TYPE_LIB_VERSION]];
     tui->node_data[TUI_NODE_INFO_TOTAL_MEMORY] = 
         data->node_data[data->node_type[VIRT_NODE_DATA_TYPE_TOTAL_MEMORY]];
+    tui->node_data[TUI_NODE_INFO_DOMAINS_MEMORY] = 
+        data->node_data[data->node_type[VIRT_NODE_DATA_TYPE_DOMAIN_MEMORY]];
 
     /* set up default order */
     tui->node_type[0] = TUI_NODE_INFO_HOSTNAME;
@@ -60,11 +61,6 @@ void tui_create_node_panel(tui_node_data *tui, virt_node_data *data)
     tui->node_type[2] = TUI_NODE_INFO_LIB_VERSION;
     tui->node_type[3] = TUI_NODE_INFO_TOTAL_MEMORY;
     tui->node_type[4] = TUI_NODE_INFO_DOMAINS_MEMORY;
-}
-
-void tui_node_update_memory_data(tui_node_data *tui, virt_domain_data *data)
-{
-    tui->node_data[TUI_NODE_INFO_DOMAINS_MEMORY] = data->domain_memory_size;
 }
 
 void tui_draw_node_panel(tui_node_data *tui)

@@ -96,33 +96,27 @@ const char *virt_domain_pmsuspended_reason[VIRT_DOMAIN_PMSUSPENDED_SIZE] = {
     "the reason is unknown"
 };
 
-void virt_init_domain_data(void *vdata)
+void virt_init_domain_data(virt_domain_data *data)
 {
-    virt_domain_data *data = (virt_domain_data *)vdata;
-
     for (int i = 0; i != VIRT_DOMAIN_DATA_TYPE_SIZE; ++i) {
         data->domain_data[i] = NULL;
         data->domain_type[i] = i;
     }
     
-    data->domain_memory_size = NULL;
     data->domain_stats[0]   = 0;
     data->domain_size       = 0;
 }
 
-void virt_deinit_domain_data(void *vdata)
+void virt_deinit_domain_data(virt_domain_data *data)
 {
-    virt_domain_data *data = (virt_domain_data *)vdata;
-
     for (int i = 0; i != VIRT_DOMAIN_DATA_TYPE_SIZE; ++i) 
         free_pointer_char(data->domain_data[i], data->domain_data[i] + data->domain_size);
-    free(data->domain_memory_size);
 }
 
-void virt_reset_domain(void *vdata)
+void virt_reset_domain(virt_domain_data *data)
 {
-    virt_deinit_domain_data(vdata);
-    virt_init_domain_data(vdata);
+    virt_deinit_domain_data(data);
+    virt_init_domain_data(data);
 }
 
 void state_to_stats(virt_domain_data *data, int state)
@@ -160,7 +154,7 @@ void state_to_stats(virt_domain_data *data, int state)
     }
 }
 
-void virt_domain_collect_state_data(virt_data *virt, virt_domain_data *data)
+void virt_get_domain_state_data(virt_data *virt, virt_domain_data *data)
 {
     int state       = 0;
     int reason      = 0;
@@ -198,11 +192,8 @@ void virt_domain_collect_state_data(virt_data *virt, virt_domain_data *data)
     }
 }
 
-void virt_domain_collect_memory_data(virt_data *virt, virt_domain_data *data)
+void virt_get_domain_memory_data(virt_data *virt, virt_domain_data *data)
 {
-    /* total memory used by all domains */
-    int long mem_total = 0;
-
     for (int i = 0; i != virt->domain_size; ++i) {
         /* get all memory statistics for each guest */
         virDomainMemoryStatStruct mem_stats[VIR_DOMAIN_MEMORY_STAT_NR];
@@ -227,7 +218,6 @@ void virt_domain_collect_memory_data(virt_data *virt, virt_domain_data *data)
                 }
             }
         }
-        mem_total += mem_max;
         /* calculate memory usage % for each guest */
         double mem_usage_prc = 0;
         if (mem_max > 0) {
@@ -236,53 +226,50 @@ void virt_domain_collect_memory_data(virt_data *virt, virt_domain_data *data)
         } else
             data->domain_data[VIRT_DOMAIN_DATA_TYPE_MEMORY_PRC][i] = copy_str(VIRT_DOMAIN_UNKNOWN_DATA);
     }
-
-    /* total memory used by all domains in MBytes */
-    data->domain_memory_size = int_to_str(mem_total/1024);
 }
 
-virt_domain_data virt_domain_collect_data(virt_data  *virt)
+void *virt_get_domain_data(virt_data *virt)
 {
     /* get defined domains */
     virt->domain_size = virConnectListAllDomains(virt->conn, &virt->domain, 0);
 
-    virt_domain_data data;
-    virt_init_domain_data(&data);
+    virt_domain_data *data = malloc(sizeof(virt_domain_data));
+    virt_init_domain_data(data);
 
     if (virt->domain_size < 0)
         return data;
 
-    data.domain_size = virt->domain_size;
+    data->domain_size = virt->domain_size;
 
-    /* Collect libvirt data */
+    /* get libvirt data */
     for (int i = 0; i != VIRT_DOMAIN_DATA_TYPE_SIZE; ++i) 
-        data.domain_data[i] = calloc(virt->domain_size+1, sizeof(char *));
+        data->domain_data[i] = calloc(virt->domain_size+1, sizeof(char *));
 
     int autostart   = 0;
     int id          = 0;
     int type        = 0;
 
-    /* collect state info data */
-    data.domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_STATE;
-    virt_domain_collect_state_data(virt, &data);
+    /* get state info data */
+    data->domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_STATE;
+    virt_get_domain_state_data(virt, data);
 
-    /* collect memory info data */
-    data.domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_MEMORY_PRC;
-    virt_domain_collect_memory_data(virt, &data);
+    /* get memory info data */
+    data->domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_MEMORY_PRC;
+    virt_get_domain_memory_data(virt, data);
 
-    data.domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_ID;
-    data.domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_NAME;
-    data.domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_AUTOSTART;
+    data->domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_ID;
+    data->domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_NAME;
+    data->domain_type[type++] = VIRT_DOMAIN_DATA_TYPE_AUTOSTART;
     for (int i = 0; i != virt->domain_size; ++i) {
         id = virDomainGetID(virt->domain[i]);
-        data.domain_data[VIRT_DOMAIN_DATA_TYPE_ID][i]       = id > 0 ? int_to_str(id) : copy_str(VIRT_DOMAIN_UNKNOWN_DATA);
+        data->domain_data[VIRT_DOMAIN_DATA_TYPE_ID][i]       = id > 0 ? int_to_str(id) : copy_str(VIRT_DOMAIN_UNKNOWN_DATA);
 
-        data.domain_data[VIRT_DOMAIN_DATA_TYPE_NAME][i]     = copy_str(virDomainGetName(virt->domain[i]));
+        data->domain_data[VIRT_DOMAIN_DATA_TYPE_NAME][i]     = copy_str(virDomainGetName(virt->domain[i]));
 
         virDomainGetAutostart(virt->domain[i], &autostart);
-        data.domain_data[VIRT_DOMAIN_DATA_TYPE_AUTOSTART][i] = copy_str(autostart ? "yes" : "no" );
+        data->domain_data[VIRT_DOMAIN_DATA_TYPE_AUTOSTART][i] = copy_str(autostart ? "yes" : "no" );
     }
-    ++data.domain_size;
+    ++data->domain_size;
 
     return data;
 }

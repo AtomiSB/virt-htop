@@ -78,8 +78,6 @@ typedef enum {
 typedef struct {
     /** Arrays containing varous domain data */
     char **domain_data[VIRT_DOMAIN_DATA_TYPE_SIZE];  
-    /** Holds sum of allocated memory by domains */
-    char *domain_memory_size;                        
     /** Statistics of domain states */
     int  domain_stats[VIRT_DOMAIN_STATS];            
     /** Indecies for current domain type positions in domain_data array */
@@ -133,25 +131,25 @@ const char *virt_domain_pmsuspended_reason[VIRT_DOMAIN_PMSUSPENDED_SIZE];
 
 /**
  * Set domain data to default state.
- * @param vdata - Object to be filled with domains data
+ * @param virt - Object to be filled with domains data
  * @see virt_deinit_domain
  */
-void virt_init_domain_data(void *vdata);
+void virt_init_domain_data(virt_domain_data *data);
 
 /**
  * Deinitialize the domain data object.
- * @param vdata - Object filled with domains data
+ * @param virt - Object filled with domains data
  * @see virt_init_domain_default
  */
-void virt_deinit_domain_data(void *vdata);
+void virt_deinit_domain_data(virt_domain_data *data);
 
 /**
  * First deinitialize the domain data object and then default init it.
- * @param vdata - Object filled with domains data
+ * @param virt - Object filled with domains data
  * @see virt_init_domain_data
  * @see virt_deinit_domain_data
  */
-void virt_reset_domain_data(void *vdata);
+void virt_reset_domain_data(virt_domain_data *data);
 
 /**
  * Gather all the information about domains states.
@@ -159,7 +157,7 @@ void virt_reset_domain_data(void *vdata);
  * @param data - Object to be filled with domains states data.
  * @return object filled with domain states data, NULL otherwise
  */
-void virt_domain_collect_state_data(virt_data *virt, virt_domain_data *data);
+void virt_get_domain_state_data(virt_data *virt, virt_domain_data *data);
 
 /**
  * Gather all the information about domains memory.
@@ -167,16 +165,16 @@ void virt_domain_collect_state_data(virt_data *virt, virt_domain_data *data);
  * @param data - Object to be filled with domains memory data.
  * @return object filled with domain memory data, NULL otherwise
  */
-void virt_domain_collect_memory_data(virt_data *virt, virt_domain_data *data);
+void virt_get_domain_memory_data(virt_data *virt, virt_domain_data *data);
 
 /**
  * Gather all the information about domains.
  * @param virt - Handler to the libvirt connection
  * @return object filled with domain data, NULL otherwise
- * @see virt_domain_collect_memory_data
- * @see virt_domain_collect_state_data
+ * @see virt_get_domain_memory_data
+ * @see virt_get_domain_state_data
  */
-virt_domain_data virt_domain_collect_data(virt_data *virt);
+void *virt_get_domain_data(virt_data *virt);
 
 /**
  * Set domain's autostart on/off
