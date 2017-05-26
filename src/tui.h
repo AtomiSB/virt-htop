@@ -47,6 +47,12 @@
 #define TUI_CREATE_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to tui draw functions */
 #define TUI_DRAW_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to tui menu driver functions */
+#define TUI_MENU_DRIVER_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to tui menu index functions */
+#define TUI_MENU_INDEX_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to tui menu set index functions */
+#define TUI_MENU_SET_INDEX_FUNCTION_SIZE (1)
 
 /** Represents F(N) keys used for calling command panel's buttons */
 typedef enum {
@@ -204,6 +210,10 @@ void tui_draw_domains(void *tui);
  */
 void tui_draw_help();
 
+void tui_menu_driver_domain(void *tdata, int type);
+int tui_menu_index_domain(void *tdata);
+void tui_menu_set_index_domain(void *tdata, int index);
+
 /** @see dui_draw */
 typedef enum {
     TUI_MODE_DOMAIN,
@@ -212,24 +222,36 @@ typedef enum {
 } tui_mode_enum;
 typedef tui_mode_enum tui_mode;
 
-/** Tui init functions */
+/** tui init functions */
 typedef void (*tui_init_function)(void *tui_data);
 tui_init_function tui_init[TUI_INIT_FUNCTION_SIZE];
 
-/** Tui deinit functions */
+/** tui deinit functions */
 typedef void (*tui_deinit_function)(void *tui_data);
 tui_deinit_function tui_deinit[TUI_DEINIT_FUNCTION_SIZE];
 
-/** Tui reset functions */
+/** tui reset functions */
 typedef void (*tui_reset_function)(void *tui_data);
 tui_reset_function tui_reset[TUI_RESET_FUNCTION_SIZE];
 
-/** Tui create functions */
+/** tui create functions */
 typedef void (*tui_create_function)(void *tui_data, void *virt_data);
 tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE];
 
-/** Tui draw functions */
+/** tui draw functions */
 typedef void (*tui_draw_function)(void *tui_data);
 tui_draw_function tui_draw[TUI_DRAW_FUNCTION_SIZE];
+
+/** tui menu driver functions */
+typedef void (*tui_menu_driver_function)(void *tui_data, int type);
+tui_menu_driver_function tui_menu_driver[TUI_MENU_DRIVER_FUNCTION_SIZE];
+
+/** tui menu index functions */
+typedef int (*tui_menu_index_function)(void *tui_data);
+tui_menu_index_function tui_menu_index[TUI_MENU_INDEX_FUNCTION_SIZE];
+
+/** tui menu index functions */
+typedef void (*tui_menu_set_index_function)(void *tui_data, int index);
+tui_menu_set_index_function tui_menu_set_index[TUI_MENU_SET_INDEX_FUNCTION_SIZE];
 
 #endif /* TUI_H */

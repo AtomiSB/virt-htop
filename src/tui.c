@@ -205,6 +205,28 @@ void tui_draw_help()
     timeout(TUI_INPUT_DELAY); /* make input non-blocking with expected timeout */
 }
 
+void tui_menu_driver_domain(void *tdata, int type)
+{
+    tui_data *tui = (tui_data*)tdata;
+    for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
+        menu_driver(tui->domain_data->domain_column[i], type);
+}
+
+int tui_menu_index_domain(void *tdata)
+{
+    tui_data *tui = (tui_data*)tdata;
+    return item_index(current_item(tui->domain_data->domain_column[0]));
+}
+
+void tui_menu_set_index_domain(void *tdata, int index)
+{
+    tui_data *tui = (tui_data*)tdata;
+    if (tui->domain_data->domain_size > 1)
+        for (int i = 0; i != TUI_DOMAIN_COLUMN_SIZE; ++i)
+            set_current_item(   tui->domain_data->domain_column[i], 
+                                tui->domain_data->domain_column[i]->items[index]);
+}
+
 tui_init_function tui_init[TUI_INIT_FUNCTION_SIZE] = {
     tui_init_domain,
 };
@@ -223,4 +245,16 @@ tui_create_function tui_create[TUI_CREATE_FUNCTION_SIZE] = {
 
 tui_draw_function tui_draw[TUI_DRAW_FUNCTION_SIZE] = {
     tui_draw_domains
+};
+
+tui_menu_driver_function tui_menu_driver[TUI_MENU_DRIVER_FUNCTION_SIZE] = {
+    tui_menu_driver_domain
+};
+
+tui_menu_index_function tui_menu_index[TUI_MENU_INDEX_FUNCTION_SIZE] = {
+    tui_menu_index_domain
+};
+
+tui_menu_set_index_function tui_menu_set_index[TUI_MENU_SET_INDEX_FUNCTION_SIZE] = {
+    tui_menu_set_index_domain
 };
