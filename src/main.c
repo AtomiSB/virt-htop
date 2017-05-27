@@ -96,40 +96,35 @@ int main_loop(virt_data *virt, tui_data *tui)
                 case TUI_KEY_COMMAND_AUTOSTART: {
                     command = TRUE;
                     index = tui_menu_index[current_mode](tui);
-                    if (virt->domain_size > 0)
-                        virt_domain_autostart(virt->domain[index]);
+                    virt_autostart[current_mode](virt, index);
                     break;
                 }
                 case KEY_F(TUI_COMMAND_KEY_START): 
                 case TUI_KEY_COMMAND_START: {
                     command = TRUE;
                     index = tui_menu_index[current_mode](tui);
-                    if (virt->domain_size > 0)
-                        virt_domain_create(virt->domain[index]);
+                    virt_create[current_mode](virt, index);
                     break;
                 }
                 case KEY_F(TUI_COMMAND_KEY_PAUSE): 
                 case TUI_KEY_COMMAND_PAUSE: {
                     command = TRUE;
                     index = tui_menu_index[current_mode](tui);
-                    if (virt->domain_size > 0)
-                        virt_domain_pause(virt->domain[index]);
+                    virt_pause[current_mode](virt, index);
                     break;
                 }
                 case KEY_F(TUI_COMMAND_KEY_REBOOT): 
                 case TUI_KEY_COMMAND_REBOOT: {
                     command = TRUE;
                     index = tui_menu_index[current_mode](tui);
-                    if (virt->domain_size > 0)
-                        virt_domain_reboot(virt->domain[index]);
+                    virt_reboot[current_mode](virt, index);
                     break;
                 }
                 case KEY_F(TUI_COMMAND_KEY_DESTROY): 
                 case TUI_KEY_COMMAND_DESTROY: {
                     command = TRUE;
                     index = tui_menu_index[current_mode](tui);
-                    if (virt->domain_size > 0)
-                        virt_domain_destroy(virt->domain[index]);
+                    virt_destroy[current_mode](virt, index);
                     break;
                 }
             }

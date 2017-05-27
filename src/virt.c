@@ -65,6 +65,36 @@ void virt_reset_all(virt_data *virt)
     virt_init_all(virt);
 }
 
+void virt_domain_autostart_wrapper(virt_data *virt, int index)
+{
+    if (virt->domain_size > 0)
+        virt_domain_autostart(virt->domain[index]);
+}
+
+void virt_domain_create_wrapper(virt_data *virt, int index)
+{
+    if (virt->domain_size > 0)
+        virt_domain_create(virt->domain[index]);
+}
+
+void virt_domain_pause_wrapper(virt_data *virt, int index)
+{
+    if (virt->domain_size > 0)
+        virt_domain_pause(virt->domain[index]);
+}
+
+void virt_domain_reboot_wrapper(virt_data *virt, int index)
+{
+    if (virt->domain_size > 0)
+        virt_domain_reboot(virt->domain[index]);
+}
+
+void virt_domain_destroy_wrapper(virt_data *virt, int index)
+{
+    if (virt->domain_size > 0)
+        virt_domain_destroy(virt->domain[index]);
+}
+
 virConnectPtr virt_connect_node(char **conn_args)
 {
     virConnectPtr conn = NULL;
@@ -82,4 +112,24 @@ virConnectPtr virt_connect_node(char **conn_args)
 
 virt_get_function virt_get[VIRT_GET_FUNCTION_SIZE] = {
     virt_get_domain_data,
+};
+
+virt_autostart_function virt_autostart[VIRT_AUTOSTART_FUNCTION_SIZE] = {
+    virt_domain_autostart_wrapper
+};
+
+virt_create_function virt_create[VIRT_CREATE_FUNCTION_SIZE] = {
+    virt_domain_create_wrapper
+};
+
+virt_pause_function virt_pause[VIRT_PAUSE_FUNCTION_SIZE] = {
+    virt_domain_pause_wrapper
+};
+
+virt_reboot_function virt_reboot[VIRT_REBOOT_FUNCTION_SIZE] = {
+    virt_domain_reboot_wrapper
+};
+
+virt_destroy_function virt_destroy[VIRT_DESTROY_FUNCTION_SIZE] = {
+    virt_domain_destroy_wrapper
 };
