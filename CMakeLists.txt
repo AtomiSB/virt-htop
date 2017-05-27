@@ -14,25 +14,27 @@ set(CURSES_LINK_MENU "-lmenu")
 
 # -- Directories --
 set(DIR_ROOT ".")
-set(DIR_SRC "${DIR_ROOT}/src")
+set(DIR_SRC  "${DIR_ROOT}/src")
+set(DIR_VIRT "${DIR_SRC}/virt")
+set(DIR_TUI  "${DIR_SRC}/tui")
 
 # -- Sources --
 set(SOURCES
 ./src/main.c
-./src/utils.c
-./src/virt.c
-./src/virt_node.c
-./src/virt_domain.c
 ./src/arguments.c
-./src/tui.c
-./src/tui_node.c
-./src/tui_domain.c)
+./src/utils.c
+./src/virt/virt.c
+./src/virt/virt_node.c
+./src/virt/virt_domain.c
+./src/tui/tui.c
+./src/tui/tui_node.c
+./src/tui/tui_domain.c)
 
 # -- Targets --
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # -- Include --
-target_include_directories(${PROJECT_NAME} PUBLIC ${DIR_SRC})
+target_include_directories(${PROJECT_NAME} PUBLIC ${DIR_SRC} ${DIR_VIRT} ${DIR_TUI})
 
 # -- Linking --
 target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES} ${CURSES_LINK_MENU} ${LIBVIRT_LINK})
