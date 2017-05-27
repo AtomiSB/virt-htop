@@ -42,6 +42,16 @@
 #define VIRT_RESET_FUNCTION_SIZE (1)
 /** Size of array containing function pointers to virt get functions */
 #define VIRT_GET_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to virt autostart functions */
+#define VIRT_AUTOSTART_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to virt create functions */
+#define VIRT_CREATE_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to virt pause functions */
+#define VIRT_PAUSE_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to virt reboot functions */
+#define VIRT_REBOOT_FUNCTION_SIZE (1)
+/** Size of array containing function pointers to virt destroy functions */
+#define VIRT_DESTROY_FUNCTION_SIZE (1)
 
 /** List of virt errors */
 typedef enum {
@@ -92,8 +102,73 @@ void virt_deinit_all(virt_data *virt);
  */
 void virt_reset_all(virt_data *virt);
 
+/*
+ * Call the virt_autostart_domain function through virt_autostart
+ * @param virt  - pointer with virt data
+ * @param index - domain index
+ * @see virt_autostart_domain
+ * @see virt_autostart
+ */
+void virt_domain_autostart_wrapper(virt_data *virt, int index);
+
+/*
+ * Call the virt_create_domain function through virt_create
+ * @param virt  - pointer with virt data
+ * @param index - domain index
+ * @see virt_create_domain
+ * @see virt_create
+ */
+void virt_domain_create_wrapper(virt_data *virt, int index);
+
+/*
+ * Call the virt_pause_domain function through virt_pause
+ * @param virt  - pointer with virt data
+ * @param index - domain index
+ * @see virt_pause_domain
+ * @see virt_pause
+ */
+void virt_domain_pause_wrapper(virt_data *virt, int index);
+
+/*
+ * Call the virt_reboot_domain function through virt_reboot
+ * @param virt  - pointer with virt data
+ * @param index - domain index
+ * @see virt_reboot_domain
+ * @see virt_reboot
+ */
+void virt_domain_reboot_wrapper(virt_data *virt, int index);
+
+/*
+ * Call virt_destroy_domain function through virt_destroy
+ * @param virt  - pointer with virt data
+ * @param index - domain index
+ * @see virt_destroy_domain
+ * @see virt_destroy
+ */
+void virt_domain_destroy_wrapper(virt_data *virt, int index);
+
 /** virt get functions */
 typedef void *(*virt_get_function)(virt_data *virt);
 virt_get_function virt_get[VIRT_GET_FUNCTION_SIZE];
+
+/** virt autostart functions */
+typedef void (*virt_autostart_function)(virt_data *virt, int index);
+virt_autostart_function virt_autostart[VIRT_AUTOSTART_FUNCTION_SIZE];
+
+/** virt create functions */
+typedef void (*virt_create_function)(virt_data *virt, int index);
+virt_create_function virt_create[VIRT_CREATE_FUNCTION_SIZE];
+
+/** virt pause functions */
+typedef void (*virt_pause_function)(virt_data *virt, int index);
+virt_pause_function virt_pause[VIRT_PAUSE_FUNCTION_SIZE];
+
+/** virt reboot functions */
+typedef void (*virt_reboot_function)(virt_data *virt, int index);
+virt_reboot_function virt_reboot[VIRT_REBOOT_FUNCTION_SIZE];
+
+/** virt destroy functions */
+typedef void (*virt_destroy_function)(virt_data *virt, int index);
+virt_destroy_function virt_destroy[VIRT_DESTROY_FUNCTION_SIZE];
 
 #endif /* VIRT_H */
